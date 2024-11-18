@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Plot_stream module &#8212; inkube 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Send_commands module" href="Send_commands.html" />
+    <link rel="prev" title="GUI module" href="GUI.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Send_commands.html" title="Send_commands module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="GUI.html" title="GUI module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">inkube 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">Readout_python</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Plot_stream module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-Plot_stream">
+<span id="plot-stream-module"></span><h1>Plot_stream module<a class="headerlink" href="#module-Plot_stream" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="Plot_stream.UpdateData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Plot_stream.</span></span><span class="sig-name descname"><span class="pre">UpdateData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_loc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voltage_plot_stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_plot_stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_plot_stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spike_plot_stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spike_thresh_stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_voltage_bool</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_step</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Plot_stream.UpdateData" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QThread</span></code></p>
+<p>Update the electrophysiology signal data</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Plot_stream.UpdateData.dataChanged">
+<span class="sig-name descname"><span class="pre">dataChanged</span></span><a class="headerlink" href="#Plot_stream.UpdateData.dataChanged" title="Link to this definition">¶</a></dt>
+<dd><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Plot_stream.UpdateData.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Plot_stream.UpdateData.run" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Plot_stream.UpdateData.set_app">
+<span class="sig-name descname"><span class="pre">set_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_current</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Plot_stream.UpdateData.set_app" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Plot_stream.UpdateRaster">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Plot_stream.</span></span><span class="sig-name descname"><span class="pre">UpdateRaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raster_plot_pipe_recv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Plot_stream.UpdateRaster" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QThread</span></code></p>
+<p>Update the raster plot data</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Plot_stream.UpdateRaster.dataRasterChanged">
+<span class="sig-name descname"><span class="pre">dataRasterChanged</span></span><a class="headerlink" href="#Plot_stream.UpdateRaster.dataRasterChanged" title="Link to this definition">¶</a></dt>
+<dd><p>pyqtSignal(<a href="#id3"><span class="problematic" id="id4">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Plot_stream.UpdateRaster.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Plot_stream.UpdateRaster.run" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Plot_stream.UpdateRaster.set_app">
+<span class="sig-name descname"><span class="pre">set_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_current</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Plot_stream.UpdateRaster.set_app" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Plot_stream.UpdateTemp">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Plot_stream.</span></span><span class="sig-name descname"><span class="pre">UpdateTemp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level_q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shared_noise</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Plot_stream.UpdateTemp" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QThread</span></code></p>
+<p>Thread updating environment and level plot data. This also sends and or saves the env and level data to the ControlPort Client</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Plot_stream.UpdateTemp.dataChanged">
+<span class="sig-name descname"><span class="pre">dataChanged</span></span><a class="headerlink" href="#Plot_stream.UpdateTemp.dataChanged" title="Link to this definition">¶</a></dt>
+<dd><p>pyqtSignal(<a href="#id5"><span class="problematic" id="id6">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Plot_stream.UpdateTemp.rtd_conv">
+<span class="sig-name descname"><span class="pre">rtd_conv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adc_val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Plot_stream.UpdateTemp.rtd_conv" title="Link to this definition">¶</a></dt>
+<dd><p>Convert the sensor value to a tem perature in °C</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Plot_stream.UpdateTemp.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Plot_stream.UpdateTemp.run" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Plot_stream.UpdateTemp.set_app">
+<span class="sig-name descname"><span class="pre">set_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_current</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Plot_stream.UpdateTemp.set_app" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Plot_stream.UpdateWavelet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Plot_stream.</span></span><span class="sig-name descname"><span class="pre">UpdateWavelet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spike_wavelet_stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Plot_stream.UpdateWavelet" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QThread</span></code></p>
+<p>Update the spike shapes data</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Plot_stream.UpdateWavelet.dataWaveletChanged">
+<span class="sig-name descname"><span class="pre">dataWaveletChanged</span></span><a class="headerlink" href="#Plot_stream.UpdateWavelet.dataWaveletChanged" title="Link to this definition">¶</a></dt>
+<dd><p>pyqtSignal(<a href="#id7"><span class="problematic" id="id8">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Plot_stream.UpdateWavelet.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Plot_stream.UpdateWavelet.run" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Plot_stream.UpdateWavelet.set_app">
+<span class="sig-name descname"><span class="pre">set_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_current</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Plot_stream.UpdateWavelet.set_app" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Plot_stream.plot_process">
+<span class="sig-prename descclassname"><span class="pre">Plot_stream.</span></span><span class="sig-name descname"><span class="pre">plot_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_loc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voltage_plot_stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_plot_stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spike_wavelet_stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_plot_stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spike_plot_stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spike_thresh_stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_voltage_bool</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_thresh_bool</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raster_plot_pipe_recv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level_q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shared_noise_array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([0.,</span> <span class="pre">0.,</span> <span class="pre">0.,</span> <span class="pre">0.])</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Plot_stream.plot_process" title="Link to this definition">¶</a></dt>
+<dd><p>process to start the plot GUI and update the data
+Args:</p>
+<blockquote>
+<div><p>plot_loc: shared memory array for position to which data streams are aligned (time information)
+voltage_plot_stream: shared memory array for voltage data which is the processed data stream with threshold for spike detection
+signal_plot_stream: shared memory array for signal data which is processed data
+spike_wavelet_stream: shared memory array for spike shapes
+status_plot_stream: shared memory array for status data
+temp_stream: shared memory array for temperature, environment and level data
+spike_plot_stream: shared memory array for spike data
+spike_thresh_stream: shared memory array for spike detection thresholds
+plot_voltage_bool: shared memory boolean whether to plot the voltage_plot_stream data
+update_thresh_bool: shared memory boolean for updating thresholds
+plot_channels: shared memory array for channels to plot
+raster_plot_pipe_recv: pipe for raster data
+level_q: queue for medium level data
+env_q: queue for environment data
+shared_noise_array: shared memory array for noise data</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Plot_stream.save_shapes_process">
+<span class="sig-prename descclassname"><span class="pre">Plot_stream.</span></span><span class="sig-name descname"><span class="pre">save_shapes_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spike_wavelet_stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spike_wavelet_stream_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">active_channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([0,</span> <span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">4,</span> <span class="pre">5,</span> <span class="pre">6,</span> <span class="pre">7,</span> <span class="pre">8,</span> <span class="pre">9,</span> <span class="pre">10,</span> <span class="pre">11,</span> <span class="pre">12,</span> <span class="pre">13,</span> <span class="pre">14,</span> <span class="pre">15,</span> <span class="pre">16,</span> <span class="pre">17,</span> <span class="pre">18,</span> <span class="pre">19,</span> <span class="pre">20,</span> <span class="pre">21,</span> <span class="pre">22,</span> <span class="pre">23,</span> <span class="pre">24,</span> <span class="pre">25,</span> <span class="pre">26,</span> <span class="pre">27,</span> <span class="pre">28,</span> <span class="pre">29,</span> <span class="pre">30,</span> <span class="pre">31,</span> <span class="pre">32,</span> <span class="pre">33,</span> <span class="pre">34,</span> <span class="pre">35,</span> <span class="pre">36,</span> <span class="pre">37,</span> <span class="pre">38,</span> <span class="pre">39,</span> <span class="pre">40,</span> <span class="pre">41,</span> <span class="pre">42,</span> <span class="pre">43,</span> <span class="pre">44,</span> <span class="pre">45,</span> <span class="pre">46,</span> <span class="pre">47,</span> <span class="pre">48,</span> <span class="pre">49,</span> <span class="pre">50,</span> <span class="pre">51,</span> <span class="pre">52,</span> <span class="pre">53,</span> <span class="pre">54,</span> <span class="pre">55,</span> <span class="pre">56,</span> <span class="pre">57,</span> <span class="pre">58,</span> <span class="pre">59,</span> <span class="pre">60,</span> <span class="pre">61,</span> <span class="pre">62,</span> <span class="pre">63,</span> <span class="pre">64,</span> <span class="pre">65,</span> <span class="pre">66,</span> <span class="pre">67,</span> <span class="pre">68,</span> <span class="pre">69,</span> <span class="pre">70,</span> <span class="pre">71,</span> <span class="pre">72,</span> <span class="pre">73,</span> <span class="pre">74,</span> <span class="pre">75,</span> <span class="pre">76,</span> <span class="pre">77,</span> <span class="pre">78,</span> <span class="pre">79,</span> <span class="pre">80,</span> <span class="pre">81,</span> <span class="pre">82,</span> <span class="pre">83,</span> <span class="pre">84,</span> <span class="pre">85,</span> <span class="pre">86,</span> <span class="pre">87,</span> <span class="pre">88,</span> <span class="pre">89,</span> <span class="pre">90,</span> <span class="pre">91,</span> <span class="pre">92,</span> <span class="pre">93,</span> <span class="pre">94,</span> <span class="pre">95,</span> <span class="pre">96,</span> <span class="pre">97,</span> <span class="pre">98,</span> <span class="pre">99,</span> <span class="pre">100,</span> <span class="pre">101,</span> <span class="pre">102,</span> <span class="pre">103,</span> <span class="pre">104,</span> <span class="pre">105,</span> <span class="pre">106,</span> <span class="pre">107,</span> <span class="pre">108,</span> <span class="pre">109,</span> <span class="pre">110,</span> <span class="pre">111,</span> <span class="pre">112,</span> <span class="pre">113,</span> <span class="pre">114,</span> <span class="pre">115,</span> <span class="pre">116,</span> <span class="pre">117,</span> <span class="pre">118,</span> <span class="pre">119,</span> <span class="pre">120,</span> <span class="pre">121,</span> <span class="pre">122,</span> <span class="pre">123,</span> <span class="pre">124,</span> <span class="pre">125,</span> <span class="pre">126,</span> <span class="pre">127,</span> <span class="pre">128,</span> <span class="pre">129,</span> <span class="pre">130,</span> <span class="pre">131,</span> <span class="pre">132,</span> <span class="pre">133,</span> <span class="pre">134,</span> <span class="pre">135,</span> <span class="pre">136,</span> <span class="pre">137,</span> <span class="pre">138,</span> <span class="pre">139,</span> <span class="pre">140,</span> <span class="pre">141,</span> <span class="pre">142,</span> <span class="pre">143,</span> <span class="pre">144,</span> <span class="pre">145,</span> <span class="pre">146,</span> <span class="pre">147,</span> <span class="pre">148,</span> <span class="pre">149,</span> <span class="pre">150,</span> <span class="pre">151,</span> <span class="pre">152,</span> <span class="pre">153,</span> <span class="pre">154,</span> <span class="pre">155,</span> <span class="pre">156,</span> <span class="pre">157,</span> <span class="pre">158,</span> <span class="pre">159,</span> <span class="pre">160,</span> <span class="pre">161,</span> <span class="pre">162,</span> <span class="pre">163,</span> <span class="pre">164,</span> <span class="pre">165,</span> <span class="pre">166,</span> <span class="pre">167,</span> <span class="pre">168,</span> <span class="pre">169,</span> <span class="pre">170,</span> <span class="pre">171,</span> <span class="pre">172,</span> <span class="pre">173,</span> <span class="pre">174,</span> <span class="pre">175,</span> <span class="pre">176,</span> <span class="pre">177,</span> <span class="pre">178,</span> <span class="pre">179,</span> <span class="pre">180,</span> <span class="pre">181,</span> <span class="pre">182,</span> <span class="pre">183,</span> <span class="pre">184,</span> <span class="pre">185,</span> <span class="pre">186,</span> <span class="pre">187,</span> <span class="pre">188,</span> <span class="pre">189,</span> <span class="pre">190,</span> <span class="pre">191,</span> <span class="pre">192,</span> <span class="pre">193,</span> <span class="pre">194,</span> <span class="pre">195,</span> <span class="pre">196,</span> <span class="pre">197,</span> <span class="pre">198,</span> <span class="pre">199,</span> <span class="pre">200,</span> <span class="pre">201,</span> <span class="pre">202,</span> <span class="pre">203,</span> <span class="pre">204,</span> <span class="pre">205,</span> <span class="pre">206,</span> <span class="pre">207,</span> <span class="pre">208,</span> <span class="pre">209,</span> <span class="pre">210,</span> <span class="pre">211,</span> <span class="pre">212,</span> <span class="pre">213,</span> <span class="pre">214,</span> <span class="pre">215,</span> <span class="pre">216,</span> <span class="pre">217,</span> <span class="pre">218,</span> <span class="pre">219,</span> <span class="pre">220,</span> <span class="pre">221,</span> <span class="pre">222,</span> <span class="pre">223,</span> <span class="pre">224,</span> <span class="pre">225,</span> <span class="pre">226,</span> <span class="pre">227,</span> <span class="pre">228,</span> <span class="pre">229,</span> <span class="pre">230,</span> <span class="pre">231,</span> <span class="pre">232,</span> <span class="pre">233,</span> <span class="pre">234,</span> <span class="pre">235,</span> <span class="pre">236,</span> <span class="pre">237,</span> <span class="pre">238,</span> <span class="pre">239])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Plot_stream.save_shapes_process" title="Link to this definition">¶</a></dt>
+<dd><p>function to save spike shapes
+Args:</p>
+<blockquote>
+<div><p>spike_wavelet_stream: shared memory array for spike shapes
+spike_wavelet_stream_id: shared memory array for spike ids
+active_channels: channels to save
+update_t: time between saving
+event: event to stop saving</p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Plot_stream module</a><ul>
+<li><a class="reference internal" href="#Plot_stream.UpdateData"><code class="docutils literal notranslate"><span class="pre">UpdateData</span></code></a><ul>
+<li><a class="reference internal" href="#Plot_stream.UpdateData.dataChanged"><code class="docutils literal notranslate"><span class="pre">UpdateData.dataChanged</span></code></a></li>
+<li><a class="reference internal" href="#Plot_stream.UpdateData.run"><code class="docutils literal notranslate"><span class="pre">UpdateData.run()</span></code></a></li>
+<li><a class="reference internal" href="#Plot_stream.UpdateData.set_app"><code class="docutils literal notranslate"><span class="pre">UpdateData.set_app()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Plot_stream.UpdateRaster"><code class="docutils literal notranslate"><span class="pre">UpdateRaster</span></code></a><ul>
+<li><a class="reference internal" href="#Plot_stream.UpdateRaster.dataRasterChanged"><code class="docutils literal notranslate"><span class="pre">UpdateRaster.dataRasterChanged</span></code></a></li>
+<li><a class="reference internal" href="#Plot_stream.UpdateRaster.run"><code class="docutils literal notranslate"><span class="pre">UpdateRaster.run()</span></code></a></li>
+<li><a class="reference internal" href="#Plot_stream.UpdateRaster.set_app"><code class="docutils literal notranslate"><span class="pre">UpdateRaster.set_app()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Plot_stream.UpdateTemp"><code class="docutils literal notranslate"><span class="pre">UpdateTemp</span></code></a><ul>
+<li><a class="reference internal" href="#Plot_stream.UpdateTemp.dataChanged"><code class="docutils literal notranslate"><span class="pre">UpdateTemp.dataChanged</span></code></a></li>
+<li><a class="reference internal" href="#Plot_stream.UpdateTemp.rtd_conv"><code class="docutils literal notranslate"><span class="pre">UpdateTemp.rtd_conv()</span></code></a></li>
+<li><a class="reference internal" href="#Plot_stream.UpdateTemp.run"><code class="docutils literal notranslate"><span class="pre">UpdateTemp.run()</span></code></a></li>
+<li><a class="reference internal" href="#Plot_stream.UpdateTemp.set_app"><code class="docutils literal notranslate"><span class="pre">UpdateTemp.set_app()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Plot_stream.UpdateWavelet"><code class="docutils literal notranslate"><span class="pre">UpdateWavelet</span></code></a><ul>
+<li><a class="reference internal" href="#Plot_stream.UpdateWavelet.dataWaveletChanged"><code class="docutils literal notranslate"><span class="pre">UpdateWavelet.dataWaveletChanged</span></code></a></li>
+<li><a class="reference internal" href="#Plot_stream.UpdateWavelet.run"><code class="docutils literal notranslate"><span class="pre">UpdateWavelet.run()</span></code></a></li>
+<li><a class="reference internal" href="#Plot_stream.UpdateWavelet.set_app"><code class="docutils literal notranslate"><span class="pre">UpdateWavelet.set_app()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Plot_stream.plot_process"><code class="docutils literal notranslate"><span class="pre">plot_process()</span></code></a></li>
+<li><a class="reference internal" href="#Plot_stream.save_shapes_process"><code class="docutils literal notranslate"><span class="pre">save_shapes_process()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="GUI.html"
+                          title="previous chapter">GUI module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="Send_commands.html"
+                          title="next chapter">Send_commands module</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/Plot_stream.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Send_commands.html" title="Send_commands module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="GUI.html" title="GUI module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">inkube 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >Readout_python</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Plot_stream module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Benedikt Maurer, Stephan J. Ihle, GPLv3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

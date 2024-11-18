@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>ControlPort module &#8212; inkube 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">inkube 1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ControlPort module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-ControlPort">
+<span id="controlport-module"></span><h1>ControlPort module<a class="headerlink" href="#module-ControlPort" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="ControlPort.ControlPort">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ControlPort.</span></span><span class="sig-name descname"><span class="pre">ControlPort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'127.0.0.1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4673</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1234'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_inkulevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_env</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MAX_STEPS</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">99999</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to control the inkube device with environment parameters and fluidics</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.aux_heater_state">
+<span class="sig-name descname"><span class="pre">aux_heater_state</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#ControlPort.ControlPort.aux_heater_state" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.aux_is_humidity">
+<span class="sig-name descname"><span class="pre">aux_is_humidity</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#ControlPort.ControlPort.aux_is_humidity" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.close_delay">
+<span class="sig-name descname"><span class="pre">close_delay</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">12</span></em><a class="headerlink" href="#ControlPort.ControlPort.close_delay" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.co2_convert_factor">
+<span class="sig-name descname"><span class="pre">co2_convert_factor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0030517578125</span></em><a class="headerlink" href="#ControlPort.ControlPort.co2_convert_factor" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.co2_offset">
+<span class="sig-name descname"><span class="pre">co2_offset</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">16384</span></em><a class="headerlink" href="#ControlPort.ControlPort.co2_offset" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.co2_state">
+<span class="sig-name descname"><span class="pre">co2_state</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#ControlPort.ControlPort.co2_state" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.control_write_reg">
+<span class="sig-name descname"><span class="pre">control_write_reg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.control_write_reg" title="Link to this definition">¶</a></dt>
+<dd><p>create command to write to register on SoC</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.create_log_file">
+<span class="sig-name descname"><span class="pre">create_log_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.create_log_file" title="Link to this definition">¶</a></dt>
+<dd><p>Create a log file for the control port</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.delay_table">
+<span class="sig-name descname"><span class="pre">delay_table</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">'0</span> <span class="pre">ms',</span> <span class="pre">1:</span> <span class="pre">'1</span> <span class="pre">ms',</span> <span class="pre">2:</span> <span class="pre">'2</span> <span class="pre">ms',</span> <span class="pre">3:</span> <span class="pre">'5</span> <span class="pre">ms',</span> <span class="pre">4:</span> <span class="pre">'10</span> <span class="pre">ms',</span> <span class="pre">5:</span> <span class="pre">'20</span> <span class="pre">ms',</span> <span class="pre">6:</span> <span class="pre">'50</span> <span class="pre">ms',</span> <span class="pre">7:</span> <span class="pre">'100</span> <span class="pre">ms',</span> <span class="pre">8:</span> <span class="pre">'200</span> <span class="pre">ms',</span> <span class="pre">9:</span> <span class="pre">'500</span> <span class="pre">ms',</span> <span class="pre">10:</span> <span class="pre">'1</span> <span class="pre">s',</span> <span class="pre">11:</span> <span class="pre">'2</span> <span class="pre">s',</span> <span class="pre">12:</span> <span class="pre">'5</span> <span class="pre">s',</span> <span class="pre">13:</span> <span class="pre">'10</span> <span class="pre">s',</span> <span class="pre">14:</span> <span class="pre">'15</span> <span class="pre">s',</span> <span class="pre">15:</span> <span class="pre">'20</span> <span class="pre">s'}</span></em><a class="headerlink" href="#ControlPort.ControlPort.delay_table" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.enable_pump">
+<span class="sig-name descname"><span class="pre">enable_pump</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.enable_pump" title="Link to this definition">¶</a></dt>
+<dd><p>enable actuators (stepper motor and valve driver)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.env_heater_state">
+<span class="sig-name descname"><span class="pre">env_heater_state</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#ControlPort.ControlPort.env_heater_state" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.get_inkulevel_command">
+<span class="sig-name descname"><span class="pre">get_inkulevel_command</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.get_inkulevel_command" title="Link to this definition">¶</a></dt>
+<dd><p>create command word which is sent to inkulevel with parameters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.get_level">
+<span class="sig-name descname"><span class="pre">get_level</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.get_level" title="Link to this definition">¶</a></dt>
+<dd><p>receive element from medium level pipe</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.get_pump_command">
+<span class="sig-name descname"><span class="pre">get_pump_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delay</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.get_pump_command" title="Link to this definition">¶</a></dt>
+<dd><p>create command word which is sent to inkube with pump position, valve settings and delay</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.get_temperature">
+<span class="sig-name descname"><span class="pre">get_temperature</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.get_temperature" title="Link to this definition">¶</a></dt>
+<dd><p>readout environment data from control port</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.get_valve_command">
+<span class="sig-name descname"><span class="pre">get_valve_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delay</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.get_valve_command" title="Link to this definition">¶</a></dt>
+<dd><p>create command word which is sent to inkube with pump position, valve settings and delay</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.mea_control_state">
+<span class="sig-name descname"><span class="pre">mea_control_state</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0]</span></em><a class="headerlink" href="#ControlPort.ControlPort.mea_control_state" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.new_connection">
+<span class="sig-name descname"><span class="pre">new_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.new_connection" title="Link to this definition">¶</a></dt>
+<dd><p>Connect to SoC and readout medium level queue</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.open_delay">
+<span class="sig-name descname"><span class="pre">open_delay</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#ControlPort.ControlPort.open_delay" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.pump_abs">
+<span class="sig-name descname"><span class="pre">pump_abs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.pump_abs" title="Link to this definition">¶</a></dt>
+<dd><p>update pump position as absolute value</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.pump_command_prefix">
+<span class="sig-name descname"><span class="pre">pump_command_prefix</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">np.uint32(2147483648)</span></em><a class="headerlink" href="#ControlPort.ControlPort.pump_command_prefix" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.pump_delay">
+<span class="sig-name descname"><span class="pre">pump_delay</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">11</span></em><a class="headerlink" href="#ControlPort.ControlPort.pump_delay" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.pump_rel">
+<span class="sig-name descname"><span class="pre">pump_rel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.pump_rel" title="Link to this definition">¶</a></dt>
+<dd><p>update pump position relative to current</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.pump_wait_per_step">
+<span class="sig-name descname"><span class="pre">pump_wait_per_step</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.00022</span></em><a class="headerlink" href="#ControlPort.ControlPort.pump_wait_per_step" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.refill_delay">
+<span class="sig-name descname"><span class="pre">refill_delay</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">15</span></em><a class="headerlink" href="#ControlPort.ControlPort.refill_delay" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.retrieve_wait">
+<span class="sig-name descname"><span class="pre">retrieve_wait</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">30</span></em><a class="headerlink" href="#ControlPort.ControlPort.retrieve_wait" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.rtd0">
+<span class="sig-name descname"><span class="pre">rtd0</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1000</span></em><a class="headerlink" href="#ControlPort.ControlPort.rtd0" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.rtd_a">
+<span class="sig-name descname"><span class="pre">rtd_a</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0039083</span></em><a class="headerlink" href="#ControlPort.ControlPort.rtd_a" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.rtd_b">
+<span class="sig-name descname"><span class="pre">rtd_b</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-5.775e-07</span></em><a class="headerlink" href="#ControlPort.ControlPort.rtd_b" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.rtd_ref">
+<span class="sig-name descname"><span class="pre">rtd_ref</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4020.0</span></em><a class="headerlink" href="#ControlPort.ControlPort.rtd_ref" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.send_LED_blink">
+<span class="sig-name descname"><span class="pre">send_LED_blink</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repetitions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.send_LED_blink" title="Link to this definition">¶</a></dt>
+<dd><p>send command to blink LED</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.send_commands">
+<span class="sig-name descname"><span class="pre">send_commands</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.send_commands" title="Link to this definition">¶</a></dt>
+<dd><p>Transmit commands via network interface to main script</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.set_co2">
+<span class="sig-name descname"><span class="pre">set_co2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">set_co2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.set_co2" title="Link to this definition">¶</a></dt>
+<dd><p>Set the CO2 concentration in the environment reservoir.
+Args:</p>
+<blockquote>
+<div><p>set_co2 (float): The desired CO2 concentration in percentage.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.set_co2_control">
+<span class="sig-name descname"><span class="pre">set_co2_control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.set_co2_control" title="Link to this definition">¶</a></dt>
+<dd><p>Turn the CO2 control on or off and switch the calibration mode.
+Args:</p>
+<blockquote>
+<div><p>state (int): The control value. 1 is for on and 0 is for off.
+calib (int): The calibration mode. 1 is for on and 0 is for off.
+init (int): The initialization mode. 1 is for on and 0 is for off.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.set_env_control">
+<span class="sig-name descname"><span class="pre">set_env_control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aux</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aux_is_humidity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.set_env_control" title="Link to this definition">¶</a></dt>
+<dd><p>Turn the environment temperature control on or off and switch the aux control.
+Args:</p>
+<blockquote>
+<div><p>temperature (int): The control value for the environment temperature. 1 is for on and 0 is for off.
+aux (int): The control value for the aux temperature. 1 is for on and 0 is for off.
+aux_is_humidity (int): The control value for the aux temperature. 1 is for humidity and 0 is for temperature.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.set_env_temp">
+<span class="sig-name descname"><span class="pre">set_env_temp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">set_temp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">37</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.set_env_temp" title="Link to this definition">¶</a></dt>
+<dd><p>Set the temperature for the environment reservoir.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>set_temp (float): The desired temperature in degrees Celsius.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.set_humidity">
+<span class="sig-name descname"><span class="pre">set_humidity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">set_hum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">55</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.set_humidity" title="Link to this definition">¶</a></dt>
+<dd><p>Set the humidity for the environment reservoir.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>set_hum (float): The desired humidity in percentage.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.set_inkulevel_param">
+<span class="sig-name descname"><span class="pre">set_inkulevel_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_inkulevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">3]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lower'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.set_inkulevel_param" title="Link to this definition">¶</a></dt>
+<dd><p>set parameter for inkulevel</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.set_mea_control">
+<span class="sig-name descname"><span class="pre">set_mea_control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mea</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">3]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.set_mea_control" title="Link to this definition">¶</a></dt>
+<dd><p>Turn the MEA tenmperature control on or off.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>state (int): The control value. 1 is for on and 0 is for off.
+mea (list): A list of MEA channel numbers (0-3) to set the control for. Defaults to all channels [0, 1, 2, 3].</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.set_mea_temp">
+<span class="sig-name descname"><span class="pre">set_mea_temp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">set_temp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">37</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mea</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">3]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.set_mea_temp" title="Link to this definition">¶</a></dt>
+<dd><p>Set the temperature for the MEA (Microelectrode Array) channels.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>set_temp (float): The desired temperature in degrees Celsius.
+mea (list): A list of MEA channel numbers (0-3) to set the temperature for. Defaults to all channels [0, 1, 2, 3].</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.split_commands">
+<span class="sig-name descname"><span class="pre">split_commands</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.split_commands" title="Link to this definition">¶</a></dt>
+<dd><p>Split commands into smaller packages so they don’t exceed the maximum number of commands</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.start_init_inkulevel">
+<span class="sig-name descname"><span class="pre">start_init_inkulevel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.start_init_inkulevel" title="Link to this definition">¶</a></dt>
+<dd><p>send command for uart daisy chain initialization</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.start_inkulevel_debug_bt">
+<span class="sig-name descname"><span class="pre">start_inkulevel_debug_bt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bt_counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.start_inkulevel_debug_bt" title="Link to this definition">¶</a></dt>
+<dd><p>set the counter with which inkulevel sends out pictures via bluetooth</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.start_inkulevel_send">
+<span class="sig-name descname"><span class="pre">start_inkulevel_send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">active_lvl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.start_inkulevel_send" title="Link to this definition">¶</a></dt>
+<dd><p>set the inkulevel to send out measurements via uart</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.switch_valve">
+<span class="sig-name descname"><span class="pre">switch_valve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valve</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ControlPort.ControlPort.switch_valve" title="Link to this definition">¶</a></dt>
+<dd><p>SET servo states for valve open/closed, either one element or two lists</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.valve_command_prefix">
+<span class="sig-name descname"><span class="pre">valve_command_prefix</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">np.uint32(0)</span></em><a class="headerlink" href="#ControlPort.ControlPort.valve_command_prefix" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ControlPort.ControlPort.wait_mea_close">
+<span class="sig-name descname"><span class="pre">wait_mea_close</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#ControlPort.ControlPort.wait_mea_close" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ControlPort module</a><ul>
+<li><a class="reference internal" href="#ControlPort.ControlPort"><code class="docutils literal notranslate"><span class="pre">ControlPort</span></code></a><ul>
+<li><a class="reference internal" href="#ControlPort.ControlPort.aux_heater_state"><code class="docutils literal notranslate"><span class="pre">ControlPort.aux_heater_state</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.aux_is_humidity"><code class="docutils literal notranslate"><span class="pre">ControlPort.aux_is_humidity</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.close_delay"><code class="docutils literal notranslate"><span class="pre">ControlPort.close_delay</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.co2_convert_factor"><code class="docutils literal notranslate"><span class="pre">ControlPort.co2_convert_factor</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.co2_offset"><code class="docutils literal notranslate"><span class="pre">ControlPort.co2_offset</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.co2_state"><code class="docutils literal notranslate"><span class="pre">ControlPort.co2_state</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.control_write_reg"><code class="docutils literal notranslate"><span class="pre">ControlPort.control_write_reg()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.create_log_file"><code class="docutils literal notranslate"><span class="pre">ControlPort.create_log_file()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.delay_table"><code class="docutils literal notranslate"><span class="pre">ControlPort.delay_table</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.enable_pump"><code class="docutils literal notranslate"><span class="pre">ControlPort.enable_pump()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.env_heater_state"><code class="docutils literal notranslate"><span class="pre">ControlPort.env_heater_state</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.get_inkulevel_command"><code class="docutils literal notranslate"><span class="pre">ControlPort.get_inkulevel_command()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.get_level"><code class="docutils literal notranslate"><span class="pre">ControlPort.get_level()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.get_pump_command"><code class="docutils literal notranslate"><span class="pre">ControlPort.get_pump_command()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.get_temperature"><code class="docutils literal notranslate"><span class="pre">ControlPort.get_temperature()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.get_valve_command"><code class="docutils literal notranslate"><span class="pre">ControlPort.get_valve_command()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.mea_control_state"><code class="docutils literal notranslate"><span class="pre">ControlPort.mea_control_state</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.new_connection"><code class="docutils literal notranslate"><span class="pre">ControlPort.new_connection()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.open_delay"><code class="docutils literal notranslate"><span class="pre">ControlPort.open_delay</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.pump_abs"><code class="docutils literal notranslate"><span class="pre">ControlPort.pump_abs()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.pump_command_prefix"><code class="docutils literal notranslate"><span class="pre">ControlPort.pump_command_prefix</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.pump_delay"><code class="docutils literal notranslate"><span class="pre">ControlPort.pump_delay</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.pump_rel"><code class="docutils literal notranslate"><span class="pre">ControlPort.pump_rel()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.pump_wait_per_step"><code class="docutils literal notranslate"><span class="pre">ControlPort.pump_wait_per_step</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.refill_delay"><code class="docutils literal notranslate"><span class="pre">ControlPort.refill_delay</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.retrieve_wait"><code class="docutils literal notranslate"><span class="pre">ControlPort.retrieve_wait</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.rtd0"><code class="docutils literal notranslate"><span class="pre">ControlPort.rtd0</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.rtd_a"><code class="docutils literal notranslate"><span class="pre">ControlPort.rtd_a</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.rtd_b"><code class="docutils literal notranslate"><span class="pre">ControlPort.rtd_b</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.rtd_ref"><code class="docutils literal notranslate"><span class="pre">ControlPort.rtd_ref</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.send_LED_blink"><code class="docutils literal notranslate"><span class="pre">ControlPort.send_LED_blink()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.send_commands"><code class="docutils literal notranslate"><span class="pre">ControlPort.send_commands()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.set_co2"><code class="docutils literal notranslate"><span class="pre">ControlPort.set_co2()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.set_co2_control"><code class="docutils literal notranslate"><span class="pre">ControlPort.set_co2_control()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.set_env_control"><code class="docutils literal notranslate"><span class="pre">ControlPort.set_env_control()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.set_env_temp"><code class="docutils literal notranslate"><span class="pre">ControlPort.set_env_temp()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.set_humidity"><code class="docutils literal notranslate"><span class="pre">ControlPort.set_humidity()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.set_inkulevel_param"><code class="docutils literal notranslate"><span class="pre">ControlPort.set_inkulevel_param()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.set_mea_control"><code class="docutils literal notranslate"><span class="pre">ControlPort.set_mea_control()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.set_mea_temp"><code class="docutils literal notranslate"><span class="pre">ControlPort.set_mea_temp()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.split_commands"><code class="docutils literal notranslate"><span class="pre">ControlPort.split_commands()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.start_init_inkulevel"><code class="docutils literal notranslate"><span class="pre">ControlPort.start_init_inkulevel()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.start_inkulevel_debug_bt"><code class="docutils literal notranslate"><span class="pre">ControlPort.start_inkulevel_debug_bt()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.start_inkulevel_send"><code class="docutils literal notranslate"><span class="pre">ControlPort.start_inkulevel_send()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.switch_valve"><code class="docutils literal notranslate"><span class="pre">ControlPort.switch_valve()</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.valve_command_prefix"><code class="docutils literal notranslate"><span class="pre">ControlPort.valve_command_prefix</span></code></a></li>
+<li><a class="reference internal" href="#ControlPort.ControlPort.wait_mea_close"><code class="docutils literal notranslate"><span class="pre">ControlPort.wait_mea_close</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/ControlPort.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">inkube 1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ControlPort module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Benedikt Maurer, Stephan J. Ihle, GPLv3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

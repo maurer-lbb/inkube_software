@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>USB_communication module &#8212; inkube 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="inkubeSpike module" href="inkubeSpike.html" />
+    <link rel="prev" title="Send_commands module" href="Send_commands.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="inkubeSpike.html" title="inkubeSpike module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Send_commands.html" title="Send_commands module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">inkube 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">Readout_python</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">USB_communication module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-USB_communication">
+<span id="usb-communication-module"></span><h1>USB_communication module<a class="headerlink" href="#module-USB_communication" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="USB_communication.USB_com">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">USB_communication.</span></span><span class="sig-name descname"><span class="pre">USB_com</span></span><a class="headerlink" href="#USB_communication.USB_com" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for the USB communication from the host PC to the FPGA/SoC. This uses USB bulk communication on a single port.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="USB_communication.USB_com.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#USB_communication.USB_com.close" title="Link to this definition">¶</a></dt>
+<dd><p>Close the USB communication.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="USB_communication.USB_com.prepare_preamble">
+<span class="sig-name descname"><span class="pre">prepare_preamble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command_key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#USB_communication.USB_com.prepare_preamble" title="Link to this definition">¶</a></dt>
+<dd><p>Prepare the preamble for the USB communication.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="USB_communication.USB_com.send_recv_port">
+<span class="sig-name descname"><span class="pre">send_recv_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recv_pkg_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry_timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#USB_communication.USB_com.send_recv_port" title="Link to this definition">¶</a></dt>
+<dd><p>Send a command to the USB device to set the port for USB communication.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="USB_communication.USB_com.write_data">
+<span class="sig-name descname"><span class="pre">write_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytearray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#USB_communication.USB_com.write_data" title="Link to this definition">¶</a></dt>
+<dd><p>send data to the USB device.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="USB_communication.relay_fpga_commands_process">
+<span class="sig-prename descclassname"><span class="pre">USB_communication.</span></span><span class="sig-name descname"><span class="pre">relay_fpga_commands_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_commands_pipe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command_to_send_pipe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Connection</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#USB_communication.relay_fpga_commands_process" title="Link to this definition">¶</a></dt>
+<dd><p>Process to receive register writes to the FPGA from the ControlPort Jupyter Client and send them to the USB communication process.
+Args:</p>
+<blockquote>
+<div><p>env_commands_pipe (multiprocessing.connection.Connection): Pipe to receive commands from the ControlPort JupyterClient through a network socket.
+command_to_send_pipe (multiprocessing.connection.Connection): Pipe to send commands to the USB communication process.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="USB_communication.send_commands_process_USB">
+<span class="sig-prename descclassname"><span class="pre">USB_communication.</span></span><span class="sig-name descname"><span class="pre">send_commands_process_USB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">com</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#USB_communication.USB_com" title="USB_communication.USB_com"><span class="pre">USB_com</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">command_to_send_pipe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recv_pkg_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry_timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#USB_communication.send_commands_process_USB" title="Link to this definition">¶</a></dt>
+<dd><p>Process to send commands to the USB device.
+Args:</p>
+<blockquote>
+<div><p>com (USB_com): USB communication object.
+command_to_send_pipe (multiprocessing.connection.Connection): Pipe to receive commands to send to the USB device.
+recv_pkg_id (multiprocessing.connection.Connection): Pipe to receive the incrementing counter of received data on the SoC which makes sure no data is dropped.
+retry_timeout (float, optional): Timeout for the retry. Defaults to 500e-4.</p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">USB_communication module</a><ul>
+<li><a class="reference internal" href="#USB_communication.USB_com"><code class="docutils literal notranslate"><span class="pre">USB_com</span></code></a><ul>
+<li><a class="reference internal" href="#USB_communication.USB_com.close"><code class="docutils literal notranslate"><span class="pre">USB_com.close()</span></code></a></li>
+<li><a class="reference internal" href="#USB_communication.USB_com.prepare_preamble"><code class="docutils literal notranslate"><span class="pre">USB_com.prepare_preamble()</span></code></a></li>
+<li><a class="reference internal" href="#USB_communication.USB_com.send_recv_port"><code class="docutils literal notranslate"><span class="pre">USB_com.send_recv_port()</span></code></a></li>
+<li><a class="reference internal" href="#USB_communication.USB_com.write_data"><code class="docutils literal notranslate"><span class="pre">USB_com.write_data()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#USB_communication.relay_fpga_commands_process"><code class="docutils literal notranslate"><span class="pre">relay_fpga_commands_process()</span></code></a></li>
+<li><a class="reference internal" href="#USB_communication.send_commands_process_USB"><code class="docutils literal notranslate"><span class="pre">send_commands_process_USB()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="Send_commands.html"
+                          title="previous chapter">Send_commands module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="inkubeSpike.html"
+                          title="next chapter">inkubeSpike module</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/USB_communication.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="inkubeSpike.html" title="inkubeSpike module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Send_commands.html" title="Send_commands module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">inkube 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >Readout_python</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">USB_communication module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Benedikt Maurer, Stephan J. Ihle, GPLv3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

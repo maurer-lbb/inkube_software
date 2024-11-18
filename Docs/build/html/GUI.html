@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>GUI module &#8212; inkube 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Plot_stream module" href="Plot_stream.html" />
+    <link rel="prev" title="Electrode_mapping module" href="Electrode_mapping.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Plot_stream.html" title="Plot_stream module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Electrode_mapping.html" title="Electrode_mapping module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">inkube 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">Readout_python</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">GUI module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-GUI">
+<span id="gui-module"></span><h1>GUI module<a class="headerlink" href="#module-GUI" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="GUI.App">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">GUI.</span></span><span class="sig-name descname"><span class="pre">App</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">update_thread</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_thread_wavelet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_thresh_bool</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QTabWidget</span></code></p>
+<p>GUI window containing inkube environment data, volume feedback, and electrophysiology plots</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.createEnvInfo">
+<span class="sig-name descname"><span class="pre">createEnvInfo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.createEnvInfo" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.createEnvPlots">
+<span class="sig-name descname"><span class="pre">createEnvPlots</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.createEnvPlots" title="Link to this definition">¶</a></dt>
+<dd><p>“add temperature, humidity, co2 and medium volume plots to new tab</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.createMeaInfo">
+<span class="sig-name descname"><span class="pre">createMeaInfo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.createMeaInfo" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.createPlots">
+<span class="sig-name descname"><span class="pre">createPlots</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.createPlots" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.createRadioGroup">
+<span class="sig-name descname"><span class="pre">createRadioGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.createRadioGroup" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.createRadioGroupNet">
+<span class="sig-name descname"><span class="pre">createRadioGroupNet</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.createRadioGroupNet" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.createSTTRPGroup">
+<span class="sig-name descname"><span class="pre">createSTTRPGroup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.createSTTRPGroup" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.createStatusPlots">
+<span class="sig-name descname"><span class="pre">createStatusPlots</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.createStatusPlots" title="Link to this definition">¶</a></dt>
+<dd><p>“add status bplots to new tab</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.onClickedCBUpdate">
+<span class="sig-name descname"><span class="pre">onClickedCBUpdate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.onClickedCBUpdate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.onClickedCBVoltage">
+<span class="sig-name descname"><span class="pre">onClickedCBVoltage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.onClickedCBVoltage" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.onClickedRadioMEA">
+<span class="sig-name descname"><span class="pre">onClickedRadioMEA</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.onClickedRadioMEA" title="Link to this definition">¶</a></dt>
+<dd><p>Radio button to change mea for plot with stream from channels</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.onClickedRadioNet">
+<span class="sig-name descname"><span class="pre">onClickedRadioNet</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.onClickedRadioNet" title="Link to this definition">¶</a></dt>
+<dd><p>Radio button to change network for plot with stream from channels</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.onClickedRadioRasterEl">
+<span class="sig-name descname"><span class="pre">onClickedRadioRasterEl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.onClickedRadioRasterEl" title="Link to this definition">¶</a></dt>
+<dd><p>Radio button to change trigger electrode for raster plot</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.updatePlotChannels">
+<span class="sig-name descname"><span class="pre">updatePlotChannels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.updatePlotChannels" title="Link to this definition">¶</a></dt>
+<dd><p>Update the internal channel variable when they have been changed through the radio buttons</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.update_data_osc">
+<span class="sig-name descname"><span class="pre">update_data_osc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.update_data_osc" title="Link to this definition">¶</a></dt>
+<dd><p>Update data in mea plot when emitted from respective update thread, callback</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.update_raster">
+<span class="sig-name descname"><span class="pre">update_raster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.update_raster" title="Link to this definition">¶</a></dt>
+<dd><p>Update data in raster plot when emitted from respective update thread, callback</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.update_temp">
+<span class="sig-name descname"><span class="pre">update_temp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.update_temp" title="Link to this definition">¶</a></dt>
+<dd><p>Update data in temperature and environment plot when emitted from respective update thread, callback</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GUI.App.update_wavelet">
+<span class="sig-name descname"><span class="pre">update_wavelet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GUI.App.update_wavelet" title="Link to this definition">¶</a></dt>
+<dd><p>Update data in spike shapes plot when emitted from respective update thread, callback</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">GUI module</a><ul>
+<li><a class="reference internal" href="#GUI.App"><code class="docutils literal notranslate"><span class="pre">App</span></code></a><ul>
+<li><a class="reference internal" href="#GUI.App.createEnvInfo"><code class="docutils literal notranslate"><span class="pre">App.createEnvInfo()</span></code></a></li>
+<li><a class="reference internal" href="#GUI.App.createEnvPlots"><code class="docutils literal notranslate"><span class="pre">App.createEnvPlots()</span></code></a></li>
+<li><a class="reference internal" href="#GUI.App.createMeaInfo"><code class="docutils literal notranslate"><span class="pre">App.createMeaInfo()</span></code></a></li>
+<li><a class="reference internal" href="#GUI.App.createPlots"><code class="docutils literal notranslate"><span class="pre">App.createPlots()</span></code></a></li>
+<li><a class="reference internal" href="#GUI.App.createRadioGroup"><code class="docutils literal notranslate"><span class="pre">App.createRadioGroup()</span></code></a></li>
+<li><a class="reference internal" href="#GUI.App.createRadioGroupNet"><code class="docutils literal notranslate"><span class="pre">App.createRadioGroupNet()</span></code></a></li>
+<li><a class="reference internal" href="#GUI.App.createSTTRPGroup"><code class="docutils literal notranslate"><span class="pre">App.createSTTRPGroup()</span></code></a></li>
+<li><a class="reference internal" href="#GUI.App.createStatusPlots"><code class="docutils literal notranslate"><span class="pre">App.createStatusPlots()</span></code></a></li>
+<li><a class="reference internal" href="#GUI.App.onClickedCBUpdate"><code class="docutils literal notranslate"><span class="pre">App.onClickedCBUpdate()</span></code></a></li>
+<li><a class="reference internal" href="#GUI.App.onClickedCBVoltage"><code class="docutils literal notranslate"><span class="pre">App.onClickedCBVoltage()</span></code></a></li>
+<li><a class="reference internal" href="#GUI.App.onClickedRadioMEA"><code class="docutils literal notranslate"><span class="pre">App.onClickedRadioMEA()</span></code></a></li>
+<li><a class="reference internal" href="#GUI.App.onClickedRadioNet"><code class="docutils literal notranslate"><span class="pre">App.onClickedRadioNet()</span></code></a></li>
+<li><a class="reference internal" href="#GUI.App.onClickedRadioRasterEl"><code class="docutils literal notranslate"><span class="pre">App.onClickedRadioRasterEl()</span></code></a></li>
+<li><a class="reference internal" href="#GUI.App.updatePlotChannels"><code class="docutils literal notranslate"><span class="pre">App.updatePlotChannels()</span></code></a></li>
+<li><a class="reference internal" href="#GUI.App.update_data_osc"><code class="docutils literal notranslate"><span class="pre">App.update_data_osc()</span></code></a></li>
+<li><a class="reference internal" href="#GUI.App.update_raster"><code class="docutils literal notranslate"><span class="pre">App.update_raster()</span></code></a></li>
+<li><a class="reference internal" href="#GUI.App.update_temp"><code class="docutils literal notranslate"><span class="pre">App.update_temp()</span></code></a></li>
+<li><a class="reference internal" href="#GUI.App.update_wavelet"><code class="docutils literal notranslate"><span class="pre">App.update_wavelet()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="Electrode_mapping.html"
+                          title="previous chapter">Electrode_mapping module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="Plot_stream.html"
+                          title="next chapter">Plot_stream module</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/GUI.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Plot_stream.html" title="Plot_stream module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Electrode_mapping.html" title="Electrode_mapping module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">inkube 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >Readout_python</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">GUI module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Benedikt Maurer, Stephan J. Ihle, GPLv3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Inkuflow module &#8212; inkube 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">inkube 1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Inkuflow module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-Inkuflow">
+<span id="inkuflow-module"></span><h1>Inkuflow module<a class="headerlink" href="#module-Inkuflow" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="Inkuflow.Inkuflow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Inkuflow.</span></span><span class="sig-name descname"><span class="pre">Inkuflow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctrl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ControlPort.html#ControlPort.ControlPort" title="ControlPort.ControlPort"><span class="pre">ControlPort</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">active_mea</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">medium_lvl_lim_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([2800,</span> <span class="pre">2800,</span> <span class="pre">2800,</span> <span class="pre">2800])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">medium_lvl_lim_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([70000,</span> <span class="pre">70000,</span> <span class="pre">70000,</span> <span class="pre">70000])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pump_amount_for_const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">925.7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pump_range_lim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[5000,</span> <span class="pre">60000]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reservoir_valves</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([[4,</span> <span class="pre">5]])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mea_valves</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([[0,</span> <span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">3]])</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Inkuflow.Inkuflow" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to control inkulevel and inkube pump with valves for multplexing</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Inkuflow.Inkuflow.const_level">
+<span class="sig-name descname"><span class="pre">const_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration_in_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">liquid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_lvl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Inkuflow.Inkuflow.const_level" title="Link to this definition">¶</a></dt>
+<dd><p>Maintains a constant level by measuring the volume and pumping in stepwise once below a certain threshold.
+Args:</p>
+<blockquote>
+<div><p>duration_in_s (int): The duration in seconds to do this operation.
+iterations (int, optional): The number of iterations for the feedback measurement (self.measure_lvl). Defaults to 5.
+liquid (int, optional): The liquid ID to refill the MEA. Defaults to 0.
+target_lvl (np.array, optional): The target level below which the pumping starts. Defaults to None.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Inkuflow.Inkuflow.exchange_amount_fb">
+<span class="sig-name descname"><span class="pre">exchange_amount_fb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">measurement_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_mea</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">liquid_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">liquid_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pump_amount_steps_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pump_step_size_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Inkuflow.Inkuflow.exchange_amount_fb" title="Link to this definition">¶</a></dt>
+<dd><p>Exchanges a specific amount with feedback.
+Args:</p>
+<blockquote>
+<div><p>measurement_iterations (int, optional): The number of measurement iterations on inkulevel. Defaults to 1.
+target_mea (np.array, optional): The target MEA. One hot. Defaults to None.
+liquid_out (int, optional): The liquid ID for retrieving fluid. Defaults to 0.
+liquid_in (int, optional): The liquid ID for in. Defaults to 1.
+pump_amount_steps_out (int, optional): The pump amount in steps for out. Defaults to 1000.
+pump_step_size_in (int, optional): The pump step size for in. Defaults to 500.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Inkuflow.Inkuflow.exchange_amount_no_fb">
+<span class="sig-name descname"><span class="pre">exchange_amount_no_fb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exchange_amount_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">liquids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">liquid_directions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[-1,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_mea</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Inkuflow.Inkuflow.exchange_amount_no_fb" title="Link to this definition">¶</a></dt>
+<dd><p>Exchanges a specific amount without feedback.
+Args:</p>
+<blockquote>
+<div><p>exchange_amount_steps (int): The exchange amount in steps on the pump.
+liquids (list, optional): The list of liquids. Defaults to [0, 1].
+liquid_directions (list, optional): The list of liquid directions. Defaults to [-1, 1].
+target_mea (np.array, optional): The target MEA. Defaults to the class active MEAs. One hot encoding.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Inkuflow.Inkuflow.measure_lvl">
+<span class="sig-name descname"><span class="pre">measure_lvl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'median'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Inkuflow.Inkuflow.measure_lvl" title="Link to this definition">¶</a></dt>
+<dd><p>Measures the inkulevel.
+Args:</p>
+<blockquote>
+<div><p>iterations (int): repeat the measurement this often.
+key (str, optional): The key how to process the multiple measurements. Choose between median, mean, min and max. Defaults to ‘median’.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>np.array: The measured inkulevel.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Inkuflow.Inkuflow.pump_amount">
+<span class="sig-name descname"><span class="pre">pump_amount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch_vector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pump_amount_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">liquid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Inkuflow.Inkuflow.pump_amount" title="Link to this definition">¶</a></dt>
+<dd><p>Pumps a specific amount by first switching the respective valves and then moving the stepper motor.
+Args:</p>
+<blockquote>
+<div><p>switch_vector (np.array): The valves to open.
+direction (int): The direction of pumping. 1 is out of MEA, -1 is in to the MEA.
+pump_amount_steps (int): The pump amount in steps. self.pump_steps_for_100 corresponds to 100 ul.
+liquid (int, optional): The liquid ID. Defaults to 0.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Inkuflow.Inkuflow.pump_steps_for_100uL">
+<span class="sig-name descname"><span class="pre">pump_steps_for_100uL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">9257</span></em><a class="headerlink" href="#Inkuflow.Inkuflow.pump_steps_for_100uL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Inkuflow.Inkuflow.pump_until_single_open">
+<span class="sig-name descname"><span class="pre">pump_until_single_open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">measurement_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">liquid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_lvl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_mea</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anticipated_step_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anticipated_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_measurement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_time_before_measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approach_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discard_measurements</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_step_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adapt_step_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Inkuflow.Inkuflow.pump_until_single_open" title="Link to this definition">¶</a></dt>
+<dd><p>Pumps until threshold is hit with a single valve open.
+Args:</p>
+<blockquote>
+<div><p>measurement_iterations (int, optional): The number of measurement iterations. Defaults to 1.
+liquid (int, optional): The liquid ID. Defaults to 0.
+target_lvl (int, optional): The target level. Defaults to 3000.
+target_mea (int, optional): The target MEA. 0 is for MEA A, 1 for MEA B and so on. Defaults to 0.
+direction (int, optional): The direction of pumping (1 is retrieve from MEA, -1 is in to MEA). Defaults to -1.
+anticipated_step_size (int, optional): Pumping steps that should result in the volume difference from calibration. Defaults to 5000.
+anticipated_dist (int, optional): Level value distance between calibration values which are assumed to represent the volume difference. Defaults to 1000.
+max_factor (float, optional): safety threshold, maximally this times anticipated step size is pumped in total. Defaults to 1.5.
+init_measurement (np.array, optional): The initial measurement. Defaults to None.
+wait_time_before_measure (int, optional): The wait time before measurement of level after pumping in sec. Defaults to 0.
+approach_factor (float, optional): The approach factor with which calcuzlated pumping is multiplied. Defaults to 0.9.
+max_iterations (int, optional): The maximum number of iterations that the target is tried to reach. Defaults to 5.
+discard_measurements (int, optional): The number of level measurements after pumping to discard. Defaults to 2.
+min_step_size (int, optional): The minimum step size of a single step. Defaults to 500.
+adapt_step_size (bool, optional): Whether to adapt the step size according to the last step. Defaults to False.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Inkuflow.Inkuflow.pump_until_target">
+<span class="sig-name descname"><span class="pre">pump_until_target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">measurement_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">liquid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_lvl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([3000,</span> <span class="pre">3000,</span> <span class="pre">3000,</span> <span class="pre">3000])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pump_step_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_max_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">20]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_measurement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_time_before_measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Inkuflow.Inkuflow.pump_until_target" title="Link to this definition">¶</a></dt>
+<dd><p>Pumps until the target level is reached.
+Args:</p>
+<blockquote>
+<div><p>measurement_iterations (int, optional): The number of measurement iterations. Defaults to 1.
+liquid (int, optional): The liquid ID. Defaults to 0.
+target_lvl (np.array, optional): The target level. Defaults to np.array([3000, 3000, 3000, 3000]).
+direction (int, optional): The direction of pumping. Defaults to -1 which is pumping in, 1 is retrieving liquid.
+pump_step_size (int, optional): The pump step size after which the measurement starts again. Defaults to 100.
+min_max_steps (list, optional): The minimum and maximum steps that can be executed once registered outside the threshold but not reaching it. Defaults to [0, 20].
+init_measurement (np.array, optional): The initial measurement. Defaults to None.
+wait_time_before_measure (int, optional): The wait time before measurement. Defaults to 0.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Inkuflow.Inkuflow.switch_reservoir">
+<span class="sig-name descname"><span class="pre">switch_reservoir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Inkuflow.Inkuflow.switch_reservoir" title="Link to this definition">¶</a></dt>
+<dd><p>Switches the reservoir valves to open (1) or closed (0) state.
+Args:</p>
+<blockquote>
+<div><p>state (int, optional): The state of the reservoir. Defaults to 0.
+delay (int, optional): The delay. Defaults to 8.</p>
+</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Inkuflow module</a><ul>
+<li><a class="reference internal" href="#Inkuflow.Inkuflow"><code class="docutils literal notranslate"><span class="pre">Inkuflow</span></code></a><ul>
+<li><a class="reference internal" href="#Inkuflow.Inkuflow.const_level"><code class="docutils literal notranslate"><span class="pre">Inkuflow.const_level()</span></code></a></li>
+<li><a class="reference internal" href="#Inkuflow.Inkuflow.exchange_amount_fb"><code class="docutils literal notranslate"><span class="pre">Inkuflow.exchange_amount_fb()</span></code></a></li>
+<li><a class="reference internal" href="#Inkuflow.Inkuflow.exchange_amount_no_fb"><code class="docutils literal notranslate"><span class="pre">Inkuflow.exchange_amount_no_fb()</span></code></a></li>
+<li><a class="reference internal" href="#Inkuflow.Inkuflow.measure_lvl"><code class="docutils literal notranslate"><span class="pre">Inkuflow.measure_lvl()</span></code></a></li>
+<li><a class="reference internal" href="#Inkuflow.Inkuflow.pump_amount"><code class="docutils literal notranslate"><span class="pre">Inkuflow.pump_amount()</span></code></a></li>
+<li><a class="reference internal" href="#Inkuflow.Inkuflow.pump_steps_for_100uL"><code class="docutils literal notranslate"><span class="pre">Inkuflow.pump_steps_for_100uL</span></code></a></li>
+<li><a class="reference internal" href="#Inkuflow.Inkuflow.pump_until_single_open"><code class="docutils literal notranslate"><span class="pre">Inkuflow.pump_until_single_open()</span></code></a></li>
+<li><a class="reference internal" href="#Inkuflow.Inkuflow.pump_until_target"><code class="docutils literal notranslate"><span class="pre">Inkuflow.pump_until_target()</span></code></a></li>
+<li><a class="reference internal" href="#Inkuflow.Inkuflow.switch_reservoir"><code class="docutils literal notranslate"><span class="pre">Inkuflow.switch_reservoir()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/Inkuflow.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">inkube 1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Inkuflow module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Benedikt Maurer, Stephan J. Ihle, GPLv3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>
