@@ -7,7 +7,7 @@ This repository contains all code associated with the Inkube system, which integ
 ## Repository Structure
 
 ### `ArtyZ7_SoC`  
-Contains the boot image for the ArtyZ7 System-on-Chip (SoC).
+Contains the boot image for the ArtyZ7 System-on-Chip (SoC) as well as the relevant VHDL (FPGA) and C (hard-core) source-code.
 
 ### `Data_analysis`  
 Jupyter notebooks for processing electrophysiology and sensor data from Inkube.
