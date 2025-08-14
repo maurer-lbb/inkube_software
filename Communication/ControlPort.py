@@ -421,6 +421,25 @@ class ControlPort:
             log_entry = f'SET PARAMETER control_mea to VALUE {state} FOR mea {mea}'
             self.logger.info(f'{timestamp} - {log_entry}')
 
+    def set_filter(self, enable=0, enable_f1=0, enable_f2=0, a1=[1,0,0,0], b1=[0,0,0,0], a2=[1,0,0,0], b2=[0,0,0,0]):
+        """set filter values"""
+        # resolution is 16 bit, signed, and 1 in bit 13
+        LSB = 2**(-13)
+        for coeff_id, filter_coeff in enumerate((a1, b1, a2, b2)):
+            for element_id, filter_element in enumerate(filter_coeff):
+                reg_num = (1 + 4*coeff_id + element_id)*4
+                byte_data = b''
+                byte_data += (self.filter_register+reg_num).to_bytes(4, "little")
+                byte_data += int(np.int16(filter_element/LSB+.5)).to_bytes(2, "little")
+                byte_data += b'\x00\x00'
+
+                self.env_command_pipe.send(byte_data) 
+
+        byte_data = b''
+        byte_data += self.filter_register.to_bytes(4, "little")
+        byte_data += ((0x00000000 + enable << 31 + enable_f1 + enable_f2 << 1)).to_bytes(4, "little")
+
+        self.env_command_pipe.send(byte_data)  
 
     def set_env_control(self, temperature=None, aux=None, aux_is_humidity=None):
         """

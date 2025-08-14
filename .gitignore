@@ -17,5 +17,11 @@ Readout_python/build
 
 Readout_python/*.html
 
-Data/*
+data/*
+*/data/*
 .venv
+data/
+.vscode/*
+Data/*
+udp_client/build/*
+*.h5

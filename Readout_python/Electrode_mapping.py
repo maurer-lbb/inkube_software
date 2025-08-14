@@ -8,7 +8,7 @@ class Electrode_mapping:
             self,
             mea_layouts,
             mask_layouts,
-            n=4,
+            n=4, # number of meas
             elec=60
         ):
         """__init__(mea_layouts, mask_layouts, n=4, elec=60): Initializes the Electrode_mapping object.  """
@@ -26,7 +26,7 @@ class Electrode_mapping:
         self.circuit_elec_ids    = []
         
         # Get mapping from mea 2 fpga
-        self.mapping_mea2fpga    = np.zeros(self.n*self.elec,dtype=int)
+        self.mapping_mea2fpga    = np.zeros(self.n*self.elec,dtype=int) # fpga mapping means iterate electrodes 0 to 14 and then chips from 0 to 3
         self.transform           = []
         self.mea_elec_ids        = []
         for i in range(self.n):
@@ -47,7 +47,7 @@ class Electrode_mapping:
                 for j in range(self.elec):
                     mea   = i
                     index = self.mea_elec_ids[-1][j]
-                    self.mapping_mea2fpga[i*self.elec+j] = mea*60+index
+                    self.mapping_mea2fpga[mea*self.elec+j] = mea*60+index
                 
             elif mea_layouts[i] == "6x10":
                 raise RuntimeError(f"MEA layout 6x10 is not implemented yet")
@@ -62,14 +62,14 @@ class Electrode_mapping:
 
             elif mea_layouts[i] == "8x8":
                 self.transform.append(lambda x: x)
-                self.mea_elec_ids.append([12, 46, 49, 51,  6, 10,  7, 56, 
-                                           8, 13, 45, 50,  1, 47, 48,  4, 
-                                           9, 14,  0, 11, 54,  3,  5, 55, 
-                                           53, 52,  2, 58, 57, 59, 29, 27, 
-                                           28, 33, 22, 23, 25, 36, 34, 24, 
-                                           42, 31, 30, 40, 35, 18, 17, 32, 
-                                           20, 15, 44, 39, 26, 38, 41, 37, 
-                                           21, 19, 16, 43])
+                self.mea_elec_ids.append([     7,  9, 12, 46, 49, 51, 
+                                           4,  5,  8, 13, 45, 50, 53, 54, 
+                                           2,  3,  6, 11, 47, 52, 55, 56, 
+                                          14,  0,  1, 10, 48, 57, 58, 59, 
+                                          29, 28, 27, 18, 41, 32, 31, 30, 
+                                          26, 25, 22, 17, 42, 37, 34, 33, 
+                                          24, 23, 20, 15, 44, 39, 36, 35, 
+                                              21, 19, 16, 43, 40, 38])
                 assert self.elec == len(self.mea_elec_ids[-1]) # If this throws an error, then the number of elec per MEA does not fit the mea layout
                 for j in range(self.elec):
                     mea   = i
@@ -138,6 +138,25 @@ class Electrode_mapping:
                     self.mapping_network2mea.append([self.transform[i](k)+self.elec*i for k in net[j]])
                     self.circuit_sizes.append(15)
                     for k in range(15):
+                        index = self.transform[i](net[j][k])+self.elec*i
+                        self.mapping_mea2network[index,0] = j + offset
+                        self.mapping_mea2network[index,1] = k
+
+            elif mask_layouts[i] == "8x8 grid":
+                net = [    [ 0,  1,  2,  3,  4,  5], 
+                       [ 6,  7,  8,  9, 10, 11, 12, 13], 
+                       [14, 15, 16, 17, 18, 19, 20, 21], 
+                       [22, 23, 24, 25, 26, 27, 28, 29], 
+                       [30, 31, 32, 33, 34, 35, 36, 37], 
+                       [38, 39, 40, 41, 42, 43, 44, 45], 
+                       [46, 47, 48, 49, 50, 51, 52, 53], 
+                           [54, 55, 56, 57, 58, 59]]
+                for j in range(8):
+                    self.mapping_network2mea.append([self.transform[i](k)+self.elec*i for k in net[j]])
+                    self.circuit_sizes.append(8)
+                    for k in range(8):
+                        if (j == 0 or j == 7) and k > 5:
+                            continue
                         index = self.transform[i](net[j][k])+self.elec*i
                         self.mapping_mea2network[index,0] = j + offset
                         self.mapping_mea2network[index,1] = k
