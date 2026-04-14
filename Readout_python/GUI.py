@@ -3,7 +3,7 @@ import numpy as np
 import multiprocessing as mp
 import pyqtgraph as pg
 from PyQt6 import QtWidgets, QtGui
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QGraphicsRectItem
 from pyqtgraph.Qt import QtCore
 from datetime import datetime
 
@@ -19,15 +19,19 @@ from Client_config import (
     WAVELET_Y_LIM,
     ELECTRODE_MAPPING,
     PLOT_NETWORKS,
-    DETECT_DURATION,
     PLOT_BUF_LEN,
     FS,
     RESPONSE_IMPORTANT_PERIOD,
     STIMULUS_CYCLE,
-    SPIKE_WAVELET_NUM, 
     DO_PLOT_SPIKE_WAVELETS, 
     SHARED_NOISE_BINS, 
     SHARED_NOISE_MAX, 
+    ELECTRODES,
+    LSB_HG, 
+
+    DO_PLOT_NETWORK_GROUPS,
+    SPIKE_WAVELET_NUM,
+    PLOT_UPDATE_STEP, 
 )
 
 class App(QtWidgets.QTabWidget):
@@ -36,7 +40,6 @@ class App(QtWidgets.QTabWidget):
         self,
         update_thread, #: UpdateData,
         update_thread_wavelet, #: UpdateWavelet, 
-        update_thresh_bool: mp.Value, 
         plot_network: mp.Value,
         parent=None,
         channel_num=4,
@@ -48,10 +51,9 @@ class App(QtWidgets.QTabWidget):
         self.wave_y_lim = WAVELET_Y_LIM
         self.plot_len = PLOT_BUF_LEN / FS * 1000
         self.plot_voltage_bool_gui = True
-        self.update_thresh_bool = update_thresh_bool
 
-        self.spike_colours = ["b", "g", "r", "c"]
-        self.raster_colours = ["b", "g", "r", "c"]
+        self.spike_colours = ["b", "g", "r", "c", "m", "y", "orange", "fuchsia"]
+        self.raster_colours = ["b", "g", "r", "c", "m", "y", "orange", "fuchsia"]
         self.env_colours = ["b", "g", "r", "c", "w"]
 
         if not PLOT_NETWORKS:
@@ -65,6 +67,8 @@ class App(QtWidgets.QTabWidget):
         self.STTRP_lim = 10. # in ms
         self.clear_raster = True
         self.raster_trigger_el = 0
+
+        self.freeze = False
 
         self.mea_state = 0
         self.network_state = 0
@@ -130,7 +134,7 @@ class App(QtWidgets.QTabWidget):
         shape_lay.addWidget(self.shape_canvas)
 
 
-        self.x_voltage = -np.arange(PLOT_BUF_LEN - 1, -1, -1) / FS * 1000
+        self.x_voltage = -np.arange(PLOT_BUF_LEN - 1, -1, -1) / FS * 1000 # negative ms
         self.x_spike_wavelet = np.arange(SPIKE_WAVELET_LEN) / FS * 1000
         self.createPlots()
         self.createStatusPlots()
@@ -155,17 +159,27 @@ class App(QtWidgets.QTabWidget):
         if self.plot_voltage_bool_gui:
             if self.plot_num > 6:
                 if self.plot_num > 36:
-                    cols = 6
+                    if ELECTRODES > 4:
+                        cols = 8
+                        rows = 8
+                    else:
+                        cols = 6
+                        rows = int(self.plot_num / cols + 0.99)
                 else:
                     cols = int(np.sqrt(self.plot_num) + 0.99)
-                rows = int(self.plot_num / cols + 0.99)
+                    rows = int(self.plot_num / cols + 0.99)
             else:
                 cols = self.plot_num
                 rows = 1
 
-            v = self.canvas.addPlot(
-                row=rows - 1, col=self.plot_num - (rows - 1) * cols - 1
-            )
+            if ELECTRODE_MAPPING.mea_layouts[0] == "8x8":
+                v = self.canvas.addPlot(
+                    row=0, col=cols-2
+                )
+            else:
+                v = self.canvas.addPlot(
+                    row=0, col=self.plot_num-(rows - 1)*cols-1
+                )
             data_it = pg.PlotDataItem(np.arange(10), np.ones(10))
             sig_it = pg.PlotDataItem(np.arange(10), .5*np.ones(10), pen="grey")
             thresh_it = pg.PlotDataItem(np.arange(10), np.zeros(10), pen="red")
@@ -185,7 +199,7 @@ class App(QtWidgets.QTabWidget):
             v.addItem(scatter_it)
             self.scatter_items[-1] = scatter_it
             v.showAxis("left")
-            v.showAxis("left", "bottom")
+            v.hideAxis("bottom")
             v.setXRange(self.dx, 0)
             v.setYRange(-self.y_lim, self.y_lim)
             self.plt_items[-1] = data_it
@@ -195,11 +209,17 @@ class App(QtWidgets.QTabWidget):
             v.getViewBox().setMouseEnabled(x=1, y=None)
             self.view_list[-1] = v
 
+            view_list_id = 0
             for r in range(rows):
                 for c in range(cols):
-                    if r * cols + c == self.plot_num - 1:
+                    if ELECTRODE_MAPPING.mea_layouts[0] == "8x8":
+                        if (not c % 7) and (not r % 7):
+                            continue
+                            
+                    
+                    if view_list_id == self.plot_num - 1:
                         break
-                    v = self.canvas.addPlot(row=r, col=c)
+                    v = self.canvas.addPlot(row=rows-1-r, col=c)
                     data_it = pg.PlotDataItem(np.arange(10), np.ones(10))
                     sig_it = pg.PlotDataItem(np.arange(10), .5*np.ones(10), pen="grey")
                     thresh_it = pg.PlotDataItem(np.arange(10), np.zeros(10), pen="red")
@@ -217,45 +237,25 @@ class App(QtWidgets.QTabWidget):
                     )
 
                     v.addItem(scatter_it)
-                    self.scatter_items[r * cols + c] = scatter_it
-                    if r == rows - 1:
+                    self.scatter_items[view_list_id] = scatter_it
+                    if r == 0:
                         v.showAxis("bottom")
                     else:
                         v.hideAxis("bottom")
                     v.showAxis("left")
-                    self.plt_thresh_line[r * cols + c] = thresh_it
-                    self.plt_items[r * cols + c] = data_it
-                    self.plt_items_sig[r * cols + c] = sig_it
+                    self.plt_thresh_line[view_list_id] = thresh_it
+                    self.plt_items[view_list_id] = data_it
+                    self.plt_items_sig[view_list_id] = sig_it
 
                     v.setXLink(self.view_list[-1])
                     v.setYLink(self.view_list[-1])
-                    self.view_list[r * cols + c] = v
+                    
+                    self.view_list[view_list_id] = v
+                    view_list_id += 1
         else:
             rows = 0
-
-        # spike wavelet plots
-        if DO_PLOT_SPIKE_WAVELETS:
-            for r in range(rows):
-                for c in range(cols):
-                    if r * cols + c == self.plot_num:
-                        break
-                    v = self.shape_canvas.addPlot(row=r, col=c)
-                    for i in range(SPIKE_WAVELET_NUM):
-                        data_it = pg.PlotDataItem(np.arange(10), np.zeros(10))
-                        v.addItem(data_it)
-                        self.spike_wavelet_plt_items[r * cols + c].append(data_it)
-                    v.showAxis("left")
-
-                    if c > 0 or r > 0:
-                        v.setXLink(self.spike_view_list[0])
-                        v.setYLink(self.spike_view_list[0])
-                    else:
-                        v.setXRange(0, self.x_spike_wavelet[-1])
-                        v.setYRange(-self.wave_y_lim, self.wave_y_lim)                
-                    v.showAxis("bottom")
-
-                    self.spike_view_list[r * cols + c] = v
-
+        if DO_PLOT_NETWORK_GROUPS:
+            self.addGridRectangles(rows, cols)
 
         r += 1
 
@@ -281,6 +281,52 @@ class App(QtWidgets.QTabWidget):
         v.setXRange(-10, self.raster_xlim)
         self.raster_plot_view = v
         self.raster_plot_it = scatter_it
+
+    def addGridRectangles(self, rows, cols):
+        """Add visual rectangles around every 2x2 grid of subplots"""
+        
+        # Store rectangle items for potential later use
+        self.grid_rectangles = []
+        
+        # Iterate through the grid in 2x2 blocks
+        for r in range(0, rows, 2):
+            for c in range(0, cols, 2):
+                # Skip if we're at the edge and don't have a full 2x2 block
+                if r + 1 >= rows or c + 1 >= cols:
+                    continue
+                    
+                # Option 1: Using a proxy widget with a frame
+                rect_widget = QGraphicsRectItem()
+                
+                # Get the bounding box of the 2x2 plots
+                # You'll need to get the actual plot positions
+                top_left_plot = self.canvas.getItem(row=rows-1-r, col=c)
+                bottom_right_plot = self.canvas.getItem(row=rows-1-(r+1), col=c+1)
+                
+                if top_left_plot and bottom_right_plot:
+                    # Get the view boxes
+                    tl_vb = top_left_plot.getViewBox()
+                    br_vb = bottom_right_plot.getViewBox()
+                    
+                    # Get scene positions
+                    tl_rect = tl_vb.sceneBoundingRect()
+                    br_rect = br_vb.sceneBoundingRect()
+                    
+                    # Create rectangle encompassing the 2x2 grid
+                    x = tl_rect.x() - 2  # Small padding
+                    y = tl_rect.y() - 2
+                    width = br_rect.x() + br_rect.width() - tl_rect.x() + 4
+                    height = br_rect.y() + br_rect.height() - tl_rect.y() + 4
+                    
+                    rect_widget.setRect(x, y, width, height)
+                    rect_widget.setPen(pg.mkPen(color=(100, 100, 100), width=2))
+                    rect_widget.setBrush(pg.mkBrush(None))  # Transparent fill
+                    
+                    # Add to the scene
+                    self.canvas.scene().addItem(rect_widget)
+                    self.grid_rectangles.append(rect_widget)
+
+    
 
     def createStatusPlots(self):
         """"add status bplots to new tab"""
@@ -408,7 +454,7 @@ class App(QtWidgets.QTabWidget):
 
     def onClickedCBUpdate(self):
         cb = self.sender()
-        self.update_thresh_bool.value = cb.isChecked()
+        self.freeze = cb.isChecked()
         
     def createEnvInfo(self):
         groupBox = QtWidgets.QGroupBox("")
@@ -465,9 +511,9 @@ class App(QtWidgets.QTabWidget):
             check1.stateChanged.connect(self.onClickedCBVoltage)
             check1.setChecked(False)
 
-            check2 = QtWidgets.QCheckBox("Update spike threshold")
+            check2 = QtWidgets.QCheckBox("Freeze")
             check2.stateChanged.connect(self.onClickedCBUpdate)
-            check2.setChecked(True)
+            check2.setChecked(False)
 
         vbox.addStretch(1)
         if cb:
@@ -534,61 +580,70 @@ class App(QtWidgets.QTabWidget):
     @QtCore.pyqtSlot(tuple)
     def update_data_osc(self, data):
         """Update data in mea plot when emitted from respective update thread, callback"""
-        if len(data) > 1:
-        # use emitted data
         
-            for i in range(self.plot_num):
-                self.plt_items[i].setData(self.x_voltage, data[1][i])
-                if len(data) > 2:
-                    self.plt_items_sig[i].setData(self.x_voltage, data[-2][i])
-                    th_plot = data[-1][i]
-                    self.plt_thresh_line[i].setData(
-                        self.x_voltage[[0, -1]], [th_plot, th_plot]
-                    )
-                else:
-                    self.plt_items_sig[i].setData()
-                    self.plt_thresh_line[i].setData()
-            
-            for it in self.scatter_items:
-                it.setData()
+        for i in range(self.plot_num):
+            voltage_data = np.array(data[1][i])  # Ensure it's a NumPy array
+            # print(f"Plot {i} shape: {voltage_data.shape}")  # Debugging
+            self.plt_items[i].setData(self.x_voltage[:voltage_data.shape[0]], voltage_data*LSB_HG)
 
-            # scatter spikes
-            if len(data[0]):
-                pkg_shifts = []
-                plt_id_prev = data[0][0][0]
+            if len(data) > 2:
+                self.plt_items_sig[i].setData(self.x_voltage[:voltage_data.shape[0]], data[-2][i])
+                th_plot = LSB_HG*data[-1][i]
+                self.plt_thresh_line[i].setData(
+                    self.x_voltage[[0, -1, -1, 0]], [th_plot, th_plot, -th_plot, -th_plot]
+                )
+            else:
+                self.plt_items_sig[i].setData()
+                self.plt_thresh_line[i].setData()
+        
+        for it in self.scatter_items:
+            it.setData()
 
-                for plt_id, pkg_shift in data[0]:
-                    # add detect duration because of backwards array readout
-                    pkg_shift = (pkg_shift + 2*DETECT_DURATION) % PLOT_BUF_LEN
-                    if plt_id == plt_id_prev:
-                        # if spike on same channel as last one append spike
-                        pkg_shifts.append(pkg_shift)
-                    else:
-                        # if spikes on new channel plot previous channel
-
-                        self.scatter_items[plt_id_prev].setData(
-                            -np.array(pkg_shifts) / FS * 1000,
-                            np.zeros(len(pkg_shifts)),
-                            symbol="t",
-                            brush=self.raster_colours[plt_id_prev],
-                            pen=self.raster_colours[plt_id_prev],
-                        )
-                        pkg_shifts = [pkg_shift]
-                    plt_id_prev = plt_id
-
+        # scatter spikes
+        
+        x_pkgs = data[0]
+        for plt_id, x in enumerate(x_pkgs):
+            if len(x):
                 self.scatter_items[plt_id].setData(
-                    -np.array(pkg_shifts) / FS * 1000,
-                    np.zeros(len(pkg_shifts)),
+                    x/FS*1000, # in negative ms
+                    np.zeros(len(x)),
                     symbol="t",
-                    brush=self.raster_colours[plt_id],
-                    pen=self.raster_colours[plt_id],
+                    brush=self.raster_colours[plt_id%4],
+                    pen=self.raster_colours[plt_id%4],
                 )
+                # print(f'{plt_id}::Plot spikes: {len(x)},  {x} ,{(x+PLOT_BUF_LEN) / FS*1000}')
 
-        if len(data) == 1:
-            for i in range(STATUS_LEN):
-                self.status_plt_items[i].setData(
-                    self.x_voltage, data[0][i].astype(np.float32)
-                )
+
+
+            # pkg_shifts = []
+            # plt_id_prev = data[0][0][0]
+
+            # for plt_id, pkg_shift in data[0]:
+            #     # add detect duration because of backwards array readout
+            #     pkg_shift = (pkg_shift + 2*DETECT_DURATION) % PLOT_BUF_LEN
+            #     if plt_id == plt_id_prev:
+            #         # if spike on same channel as last one append spike
+            #         pkg_shifts.append(pkg_shift)
+            #     else:
+            #         # if spikes on new channel plot previous channel
+
+            #         self.scatter_items[plt_id_prev].setData(
+            #             -np.array(pkg_shifts) / FS * 1000,
+            #             np.zeros(len(pkg_shifts)),
+            #             symbol="t",
+            #             brush=self.raster_colours[plt_id_prev],
+            #             pen=self.raster_colours[plt_id_prev],
+            #         )
+            #         pkg_shifts = [pkg_shift]
+            #     plt_id_prev = plt_id
+
+            # self.scatter_items[plt_id].setData(
+            #     -np.array(pkg_shifts) / FS * 1000,
+            #     np.zeros(len(pkg_shifts)),
+            #     symbol="t",
+            #     brush=self.raster_colours[plt_id],
+            #     pen=self.raster_colours[plt_id],
+            # )
 
     @QtCore.pyqtSlot(tuple)
     def update_raster(self, data):
@@ -631,7 +686,7 @@ class App(QtWidgets.QTabWidget):
     @QtCore.pyqtSlot(tuple)
     def update_temp(self, data):
         """Update data in temperature and environment plot when emitted from respective update thread, callback"""
-        mean_temp, mean_hum, mean_co2, med_level, med_counter, shared_noise = data
+        mean_temp, mean_hum, mean_co2, med_level, med_counter = data
         self.temperature_text.setText(
             f"T [°C]: {mean_temp[-1]:.2f} | CO2 [%]: {mean_co2:.2f} | H [%]: {mean_hum:.2f} \nMEA T [°C]: {mean_temp[0]:.2f} | {mean_temp[1]:.2f} | {mean_temp[2]:.2f} | {mean_temp[3]:.2f}"
         )
@@ -676,17 +731,17 @@ class App(QtWidgets.QTabWidget):
                 pxMode=True,
             )
 
-        noise_bins = (np.arange(SHARED_NOISE_BINS)+.35)/SHARED_NOISE_BINS*SHARED_NOISE_MAX
-        for plot_id, sct in enumerate(self.noise_scatter_items):
-            sct.setData(
-                noise_bins+plot_id*0.1*SHARED_NOISE_MAX/SHARED_NOISE_BINS,
-                shared_noise[plot_id*SHARED_NOISE_BINS:(plot_id+1)*SHARED_NOISE_BINS],
-                symbol="t",
-                brush=self.env_colours[plot_id],
-                pen=self.env_colours[plot_id],
-                size=6,
-                pxMode=True,
-            )        
+        # noise_bins = (np.arange(SHARED_NOISE_BINS)+.35)/SHARED_NOISE_BINS*SHARED_NOISE_MAX
+        # for plot_id, sct in enumerate(self.noise_scatter_items):
+        #     sct.setData(
+        #         noise_bins+plot_id*0.1*SHARED_NOISE_MAX/SHARED_NOISE_BINS,
+        #         shared_noise[plot_id*SHARED_NOISE_BINS:(plot_id+1)*SHARED_NOISE_BINS],
+        #         symbol="t",
+        #         brush=self.env_colours[plot_id],
+        #         pen=self.env_colours[plot_id],
+        #         size=6,
+        #         pxMode=True,
+        #     )        
 
         if rel_time > self.dt_env:
             for it in self.env_scatter_items:

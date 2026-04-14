@@ -8,28 +8,39 @@ from pyqtgraph.Qt import QtCore
 from datetime import datetime
 import os
 from GUI import App
+import zmq
+
+import struct
+import socket
 
 from ctypes import *
 from Client_config import (
     CHANNELS,
     PLOT_CHANNEL_NUM,
     PLOT_VOLT_UPDATE, 
-    SPIKE_WAVELET_LEN,
     STATUS_LEN,
     FS,
     TEMP_STREAM_SIZE,
     DO_SEND_MEDIUM_LVL,
     DO_SEND_ENV, 
-    SPIKE_WAVELET_BUF, 
     SPIKE_WAVELET_LEN, 
-    SPIKE_WAVELET_NUM, 
     DO_PLOT_SPIKE_WAVELETS, 
     DO_SAVE_ENV, 
     DO_SAVE_LVL, 
     DO_FLIP_INKULEVEL, 
     ELECTRODE_MAPPING, 
     DATA_FOLDER,
+    PLOT_BUF_LEN, 
+
+    ZMQ_PLOT_SOCKET, 
+    ZMQ_SPIKE_SOCKET, 
+    ZMQ_ENV_ENDPOINT, 
+
+    PLOT_UPDATE_STEP,
+    connect_to_zmq, 
 )
+
+from h5_saver import parse_spike_times
 # Tab IDs in the GUI
 SIGNAL_TAB_ID = 0
 STATUS_TAB_ID = 1
@@ -37,182 +48,57 @@ ENV_TAB_ID    = 2
 RASTER_TAB_ID = 3
 WAVELET_TAB_ID = 4
 
-def save_shapes_process(
-        spike_wavelet_stream, 
-        spike_wavelet_stream_id, 
-        active_channels=np.arange(CHANNELS), 
-        update_t=1., 
-        event = None
-    ):
-    """function to save spike shapes
-    Args:
-        spike_wavelet_stream: shared memory array for spike shapes
-        spike_wavelet_stream_id: shared memory array for spike ids
-        active_channels: channels to save
-        update_t: time between saving
-        event: event to stop saving
-    """
-    spike_stream = np.frombuffer(spike_wavelet_stream.get_obj(), dtype=np.float32).reshape((-1,SPIKE_WAVELET_LEN))
-    spike_stream_id = np.frombuffer(spike_wavelet_stream_id.get_obj(), dtype=np.uint32) #.reshape(SPIKE_WAVELET_SHAPE)
-
-    save_channels = np.array(ELECTRODE_MAPPING.mea2recv(active_channels.astype(int)))
-    print(f'Saving spikes of receive positions: {save_channels}')
-    
-    store_chunks = max(int(1*60./update_t), 8*SPIKE_WAVELET_NUM) # every minute because of pkg_id
-    # store_shapes = np.zeros((store_chunks, active_channels.shape[0], SPIKE_WAVELET_BUF),dtype=np.float32) # SPIKE_WAVELET_NUM, SPIKE_WAVELET_LEN
-    # store_ids = np.zeros((store_chunks, active_channels.shape[0], SPIKE_WAVELET_NUM),dtype=np.uint32)
-    save_chunk_ids = np.zeros(active_channels.shape[0], dtype=int)
-    store_shapes = np.zeros((active_channels.shape[0], store_chunks, SPIKE_WAVELET_LEN),dtype=float) # SPIKE_WAVELET_NUM, SPIKE_WAVELET_LEN
-    store_ids = np.full((active_channels.shape[0], store_chunks), -1, dtype=int)
-    save_flag = False
-
-    id = 0
-    date_for_filename = datetime.today().strftime('%Y%m%d')[2:]
-
-    subfolder = 'spike_shapes'
-    if not os.path.exists(f'{DATA_FOLDER}/{subfolder}'):
-        os.makedirs(f'{DATA_FOLDER}/{subfolder}')
-
-    repetitions = 0
-    shape_start_ids = np.full(spike_stream_id.shape, 2**22, dtype=np.uint32)
-    print('starting spike shapes')
-    while True:        
-        if event.is_set(): 
-            for ch_id, ch in enumerate(save_channels):
-                save_ids = np.where(
-                    np.not_equal(
-                        shape_start_ids[ch*SPIKE_WAVELET_NUM:(ch+1)*SPIKE_WAVELET_NUM], 
-                        spike_stream_id[ch*SPIKE_WAVELET_NUM:(ch+1)*SPIKE_WAVELET_NUM]
-                    )
-                )[0]
-
-                # dynamic
-                store_shapes[ch_id][save_chunk_ids[ch_id]:save_chunk_ids[ch_id]+save_ids.shape[0]] = np.copy(
-                    spike_stream[ch*SPIKE_WAVELET_NUM+save_ids]) 
-                store_ids[ch_id][save_chunk_ids[ch_id]:save_chunk_ids[ch_id]+save_ids.shape[0]] = np.copy(
-                    spike_stream_id[ch*SPIKE_WAVELET_NUM+save_ids])
-                
-                shape_start_ids[ch*SPIKE_WAVELET_NUM+save_ids] = np.copy(spike_stream_id[ch*SPIKE_WAVELET_NUM+save_ids])
-
-                # update the individual electrode counter
-                save_chunk_ids[ch_id] = save_chunk_ids[ch_id]+save_ids.shape[0]
-                save_flag = save_flag or save_chunk_ids[ch_id] > (store_chunks-SPIKE_WAVELET_NUM)
-
-            if save_flag:
-                trimmed_shapes = []
-                trimmed_ids = []
-                for ch_id in range(len(save_channels)):
-                    if save_chunk_ids[ch_id]:
-                        trimmed_shapes.append(store_shapes[ch_id][:save_chunk_ids[ch_id]])
-                        trimmed_ids.append(store_ids[ch_id][:save_chunk_ids[ch_id]])
-                    else:
-                        trimmed_shapes.append([])
-                        trimmed_ids.append([])
-                
-                np.savez(
-                    f"{DATA_FOLDER}/{subfolder}/spike_shapes_{repetitions}.npz", 
-                    shapes=np.array(trimmed_shapes, dtype=object), 
-                    ids=np.array(trimmed_ids, dtype=object), 
-                    timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3], 
-                    channels=active_channels, 
-                )
-
-                # np.savez(
-                #     f"{data_folder}/spike_shapes_{repetitions}.npz", 
-                #     shapes=store_shapes, 
-                #     ids=store_ids, 
-                #     timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3], 
-                #     channels=active_channels, 
-                #     save_chunk_ids=save_chunk_ids, 
-                # )
-                print("Saved_spikes")
-                save_flag = False
-                save_chunk_ids = np.zeros(active_channels.shape[0], dtype=int)
-
-                repetitions += 1
-                # need to reset
-                
-            
-        time.sleep(update_t)
+EXTERNAL_PLOT_CHUNK_LENGTH = 128
 
 def plot_process(
-    plot_loc,
-    voltage_plot_stream: mp.Array,
-    signal_plot_stream: mp.Array,
-    spike_wavelet_stream, #: mp.sharedctypes.synchronized,
-    status_plot_stream: mp.Array,
-    temp_stream: mp.Array,
-    spike_plot_stream: mp.Array,
-    spike_thresh_stream, # : mp.sharedctypes.synchronized
-    plot_voltage_bool: mp.Value,
-    update_thresh_bool: mp.Value,
-    plot_channels: mp.Value,
-    raster_plot_pipe_recv,
-    level_q = None, 
-    env_q = None, 
-    shared_noise_array = np.zeros(4), 
+    plot_voltage_bool,
+    plot_channels,
 ):
     """process to start the plot GUI and update the data
-    Args:
-        plot_loc: shared memory array for position to which data streams are aligned (time information)
-        voltage_plot_stream: shared memory array for voltage data which is the processed data stream with threshold for spike detection
-        signal_plot_stream: shared memory array for signal data which is processed data
-        spike_wavelet_stream: shared memory array for spike shapes
-        status_plot_stream: shared memory array for status data
-        temp_stream: shared memory array for temperature, environment and level data
-        spike_plot_stream: shared memory array for spike data
-        spike_thresh_stream: shared memory array for spike detection thresholds
-        plot_voltage_bool: shared memory boolean whether to plot the voltage_plot_stream data
-        update_thresh_bool: shared memory boolean for updating thresholds
-        plot_channels: shared memory array for channels to plot
-        raster_plot_pipe_recv: pipe for raster data
-        level_q: queue for medium level data
-        env_q: queue for environment data
-        shared_noise_array: shared memory array for noise data    
+
     """
+
     print(f'PID:{os.getpid()} - Started plot process.')
 
+    env_socket = connect_to_zmq(ZMQ_ENV_ENDPOINT)
+    data_socket = connect_to_zmq(ZMQ_PLOT_SOCKET)
+    spike_socket = connect_to_zmq(ZMQ_SPIKE_SOCKET)
     # create app object
     app = QtWidgets.QApplication(sys.argv)
 
     # initialise and start threads that update data
     thread = UpdateData(
-        plot_loc,
-        voltage_plot_stream,
-        signal_plot_stream, 
-        status_plot_stream,
-        spike_plot_stream,
-        spike_thresh_stream,
         plot_voltage_bool,
         np.arange(PLOT_CHANNEL_NUM),
-        update_step=PLOT_VOLT_UPDATE, 
+        PLOT_VOLT_UPDATE, 
+        data_socket, 
+        spike_socket, 
     )
 
-    thread_raster = UpdateRaster(raster_plot_pipe_recv, update_t=248)
-    thread_temp = UpdateTemp(temp_stream, update_t=721, level_q=level_q, env_q=env_q, shared_noise=shared_noise_array)
+    # thread_raster = UpdateRaster(raster_plot_pipe_recv, update_t=248)
+    thread_temp = UpdateTemp(env_socket, update_t=.5)
 
-    if DO_PLOT_SPIKE_WAVELETS:
-        thread_wavelet = UpdateWavelet(spike_wavelet_stream, np.arange(PLOT_CHANNEL_NUM), update_t=502)
-    else:
-        thread_wavelet = None
+    # if DO_PLOT_SPIKE_WAVELETS:
+    #     thread_wavelet = UpdateWavelet(spike_wavelet_stream, np.arange(PLOT_CHANNEL_NUM), update_t=502)
+    # else:
+    thread_wavelet = None
 
     # start GUI app with function callbacks for data update
     thisapp = App(
         update_thread=thread, 
         update_thread_wavelet=thread_wavelet, 
-        update_thresh_bool=update_thresh_bool,
         plot_network=plot_channels, 
         channel_num=PLOT_CHANNEL_NUM
     )
 
-    time.sleep(0.1)
+    time.sleep(.1)
     thread.set_app(thisapp)
     thread.dataChanged.connect(thisapp.update_data_osc)
     thread.start()
 
-    thread_raster.set_app(thisapp)
-    thread_raster.dataRasterChanged.connect(thisapp.update_raster)
-    thread_raster.start()
+    # thread_raster.set_app(thisapp)
+    # thread_raster.dataRasterChanged.connect(thisapp.update_raster)
+    # thread_raster.start()
 
     thread_temp.set_app(thisapp)
     thread_temp.dataChanged.connect(thisapp.update_temp)
@@ -227,15 +113,18 @@ def plot_process(
 
     sys.exit(app.exec())
 
-
 class UpdateTemp(QtCore.QThread):
     """Thread updating environment and level plot data. This also sends and or saves the env and level data to the ControlPort Client"""
 
     dataChanged = QtCore.pyqtSignal(tuple)
 
-    def __init__(self, temp_stream, update_t, level_q, env_q, shared_noise):
+    def __init__(self, env_socket, update_t):
         super().__init__()
-        self.temp_stream = np.frombuffer(temp_stream.get_obj(), dtype=np.uint32)
+        self.env_socket = env_socket
+        self.poller = zmq.Poller()
+        self.poller.register(self.env_socket, zmq.POLLIN)
+        print(f'Poller registered for env data')
+
         self.update_t = update_t
         self.convert_factor_temp = 175 / 65535
         self.temp_offset = 45
@@ -243,11 +132,6 @@ class UpdateTemp(QtCore.QThread):
         self.convert_factor_co2 = 100 / 32768
         self.co2_offset = 16384
         self.last_med_counter = np.zeros(4, dtype=int)
-        self.shared_noise_stream = np.frombuffer(shared_noise.get_obj(), dtype=np.float32)
-        if DO_SEND_MEDIUM_LVL:
-            self.level_q = level_q
-        if DO_SEND_ENV:
-            self.env_q = env_q
 
         # RTD constants
         self.rtd_a = 3.9083e-3
@@ -268,18 +152,17 @@ class UpdateTemp(QtCore.QThread):
 
     def run(self):
         t_start = time.time()
-        if DO_SEND_ENV or DO_SAVE_ENV:
-            if DO_SAVE_ENV:
-                subfolder_env = 'env'
-                if not os.path.exists(f'{DATA_FOLDER}/{subfolder_env}'):
-                    os.makedirs(f'{DATA_FOLDER}/{subfolder_env}')
-                store_env = np.zeros((60*5, 8)) # time, 4x mea T, res T, hum, CO2
-            else:
-                store_env = np.zeros((20, 8))
+        if DO_SAVE_ENV:
+            subfolder_env = 'env'
+            if not os.path.exists(f'{DATA_FOLDER}/{subfolder_env}'):
+                os.makedirs(f'{DATA_FOLDER}/{subfolder_env}')
+            store_env = np.zeros((60*5, 8)) # time, 4x mea T, res T, hum, CO2
             store_env_counter = 0
             chunk_env_counter = 1
             new_env = np.zeros(7)
-
+        else:
+            store_env = np.zeros((20, 8))
+            
         if DO_SEND_MEDIUM_LVL or DO_SAVE_LVL:            
             if DO_SAVE_LVL:
                 subfolder_lvl = 'medium_level'
@@ -306,189 +189,265 @@ class UpdateTemp(QtCore.QThread):
         while True:            
             # this reads out medium and environment from UDP package
 
-            # this thread also saves data in the background so keep this one running even when on different tab
-            stream_data = self.temp_stream.reshape(-1, TEMP_STREAM_SIZE)
-            mean_temp = np.zeros(5)
-            mean_temp[4] = (
-                np.mean(stream_data[:, 4], axis=0) * self.convert_factor_temp
-                - self.temp_offset
-            )
-            # MEA temperatures
-            mean_temp[:4] = (
-                self.rtd_conv(np.mean(stream_data[:, :4], axis=0))
-            )
+            # # this thread also saves data in the background so keep this one running even when on different tab
+            # print('Polling for env data')
+            # socks = dict(self.poller.poll(10))
+            # print(socks)
 
-            mean_hum = np.mean(stream_data[:, 5], axis=0) * self.convert_factor_hum
-            mean_co2 = (
-                np.mean(stream_data[:, 6], axis=0) - self.co2_offset
-            ) * self.convert_factor_co2
-            if DO_FLIP_INKULEVEL:
-                med_level = DO_FLIP_INKULEVEL-np.copy(stream_data[0, 7:11])
-            else:
-                med_level = np.copy(stream_data[0, 7:11])
-            med_counter = np.copy(stream_data[0, 11:15])
-            self.dataChanged.emit(
-                (mean_temp, mean_hum, mean_co2, med_level, med_counter, self.shared_noise_stream)
-            )
+            # Receive raw data from ZeroMQ
+            if True:
+                try:
+                    # print('Polling for env data')
+                    raw_data = self.env_socket.recv()
+                    # print(f"Received env data with shape {len(raw_data)}")
 
-            # this is for sending to the control port Qs or saving locally
+                    stream_data = np.frombuffer(raw_data, dtype=np.uint32).reshape(-1, TEMP_STREAM_SIZE)
+                    
+                    mean_temp = np.zeros(5)
+                    mean_temp[4] = (
+                        np.mean(stream_data[:, 4], axis=0) * self.convert_factor_temp
+                        - self.temp_offset
+                    )
+                    # MEA temperatures
+                    mean_temp[:4] = (
+                        self.rtd_conv(np.mean(stream_data[:, :4], axis=0))
+                    )
 
-            if DO_SEND_ENV or DO_SAVE_ENV or DO_SEND_MEDIUM_LVL or DO_SAVE_LVL:
-                time_passed = time.time() - t_start
-                if DO_SEND_ENV or DO_SAVE_ENV:
-                    new_env[:5] = mean_temp
-                    new_env[5] = mean_hum
-                    new_env[6] = mean_co2
-                    if np.any(np.not_equal(new_env, store_env[store_env_counter-1, 1:])):                        
-                        if store_env_counter == store_env.shape[0]:
-                            if DO_SAVE_ENV:                            
-                                np.save(f'{DATA_FOLDER}/{subfolder_env}/temperature_data_{chunk_env_counter}', store_env)
-                                chunk_env_counter += 1
-                            store_env_counter = 0
+                    mean_hum = np.mean(stream_data[:, 5], axis=0) * self.convert_factor_hum
+                    mean_co2 = (
+                        np.mean(stream_data[:, 6], axis=0) - self.co2_offset
+                    ) * self.convert_factor_co2
+                    if DO_FLIP_INKULEVEL:
+                        med_level = DO_FLIP_INKULEVEL-np.copy(stream_data[0, 7:11])
+                    else:
+                        med_level = np.copy(stream_data[0, 7:11])
+                    med_counter = np.copy(stream_data[0, 11:15])
+                    self.dataChanged.emit(
+                        (mean_temp, mean_hum, mean_co2, med_level, med_counter)
+                    )
 
-                        store_env[store_env_counter, 0] = time_passed
-                        store_env[store_env_counter, 1:] = new_env 
+                    # this is for sending to the control port Qs or saving locally
 
-                        if DO_SEND_ENV:                                            
-                            if not store_env_counter%10:
-                                if not self.env_q.full():
-                                    if not store_env_counter:
-                                        self.env_q.put(store_env[store_env_counter-10:])
-                                    else:
-                                        self.env_q.put(store_env[store_env_counter-10:store_env_counter])
-                        store_env_counter += 1
+                    if DO_SEND_ENV or DO_SAVE_ENV or DO_SEND_MEDIUM_LVL or DO_SAVE_LVL:
+                        time_passed = time.time() - t_start
+                        if DO_SEND_ENV or DO_SAVE_ENV:
+                            new_env[:5] = mean_temp
+                            new_env[5] = mean_hum
+                            new_env[6] = mean_co2
+                            if np.any(np.not_equal(new_env, store_env[store_env_counter-1, 1:])):                        
+                                if store_env_counter == store_env.shape[0]:
+                                    if DO_SAVE_ENV:                            
+                                        np.save(f'{DATA_FOLDER}/{subfolder_env}/temperature_data_{chunk_env_counter}', store_env)
+                                        chunk_env_counter += 1
+                                    store_env_counter = 0
 
-                if DO_SEND_MEDIUM_LVL or DO_SAVE_LVL:
-                    new_lvl[:4] = med_level
-                    new_lvl[4:] = med_counter
-                    if np.any(np.not_equal(new_lvl, store_lvl[store_lvl_counter-1, 1:])):                       
-                        if store_lvl_counter == store_lvl.shape[0]:
-                            if DO_SAVE_LVL:
-                                np.save(f'{DATA_FOLDER}/{subfolder_lvl}/medium_data_{chunk_lvl_counter}', store_lvl)
-                                chunk_lvl_counter += 1
-                            store_lvl_counter = 0
-                                
-                        store_lvl[store_lvl_counter, 0] = time_passed
-                        store_lvl[store_lvl_counter, 1:] = new_lvl
-                                                                    
-                        if DO_SEND_MEDIUM_LVL: 
-                            if not store_lvl_counter%10:
-                                if not self.level_q.full():
-                                    if not store_lvl_counter:
-                                        self.level_q.put(store_lvl[store_lvl_counter-10:])
-                                    else:
-                                        self.level_q.put(store_lvl[store_lvl_counter-10:store_lvl_counter])
-                        store_lvl_counter += 1
+                                store_env[store_env_counter, 0] = time_passed
+                                store_env[store_env_counter, 1:] = new_env 
 
-            # sleep
-            QtCore.QThread.msleep(self.update_t)
+                                if DO_SEND_ENV:                                            
+                                    if not store_env_counter%10:
+                                        if not self.env_q.full():
+                                            if not store_env_counter:
+                                                self.env_q.put(store_env[store_env_counter-10:])
+                                            else:
+                                                self.env_q.put(store_env[store_env_counter-10:store_env_counter])
+                                store_env_counter += 1
+
+                        if DO_SEND_MEDIUM_LVL or DO_SAVE_LVL:
+                            new_lvl[:4] = med_level
+                            new_lvl[4:] = med_counter
+                            if np.any(np.not_equal(new_lvl, store_lvl[store_lvl_counter-1, 1:])):                       
+                                if store_lvl_counter == store_lvl.shape[0]:
+                                    if DO_SAVE_LVL:
+                                        np.save(f'{DATA_FOLDER}/{subfolder_lvl}/medium_data_{chunk_lvl_counter}', store_lvl)
+                                        chunk_lvl_counter += 1
+                                    store_lvl_counter = 0
+                                        
+                                store_lvl[store_lvl_counter, 0] = time_passed
+                                store_lvl[store_lvl_counter, 1:] = new_lvl
+                                                                            
+                                if DO_SEND_MEDIUM_LVL: 
+                                    if not store_lvl_counter%10:
+                                        if not self.level_q.full():
+                                            if not store_lvl_counter:
+                                                self.level_q.put(store_lvl[store_lvl_counter-10:])
+                                            else:
+                                                self.level_q.put(store_lvl[store_lvl_counter-10:store_lvl_counter])
+                                store_lvl_counter += 1
+
+                except Exception as e:
+                    print(f'Raw env data receive failed: {e}')
+            else: 
+                time.sleep(self.update_t)
 
 
 class UpdateData(QtCore.QThread):
-    """Update the electrophysiology signal data"""
+    """Update the electrophysiology signal data from ZeroMQ"""
 
     dataChanged = QtCore.pyqtSignal(tuple)
 
     def __init__(
         self,
-        plot_loc,
-        voltage_plot_stream, 
-        signal_plot_stream,         
-        status_plot_stream,
-        spike_plot_stream,
-        spike_thresh_stream,
-        plot_voltage_bool: mp.Value,
+        plot_voltage_bool,
         channel_num,
         update_step,
+        data_socket,  # Use ZMQ instead of UNIX socket
+        spike_socket, 
     ):
         super().__init__()
-        self.plot_position_in_array = plot_loc
+        self.plot_position_in_array = 0
         self.ch_num = channel_num
-        self.voltage_stream = np.frombuffer(voltage_plot_stream.get_obj(), dtype=np.float32)
-        self.signal_stream = np.frombuffer(signal_plot_stream.get_obj(), dtype=np.float32)
-        self.status_stream = np.frombuffer(status_plot_stream.get_obj(), dtype=np.uint32)
-        self.spike_stream = np.frombuffer(spike_plot_stream.get_obj(), dtype=np.uint8)
-        self.thresh_stream = np.frombuffer(spike_thresh_stream.get_obj(), dtype=np.float32)
+        self.voltage_stream = np.zeros((CHANNELS, PLOT_BUF_LEN), dtype=np.float32)
+        self.signal_stream = np.zeros((CHANNELS, PLOT_BUF_LEN), dtype=np.float32)
+        self.thresh_stream = np.zeros(CHANNELS, dtype=np.float32)
         
         self.step = update_step
         self.plot_voltage_bool = plot_voltage_bool
+
+        self.data_socket = data_socket  # ZMQ data socket
+        self.spike_socket = spike_socket  # ZMQ spike socket
+        self.poller = zmq.Poller()
+        self.poller.register(self.data_socket, zmq.POLLIN)
+        self.poller.register(self.spike_socket, zmq.POLLIN)
 
     def set_app(self, app_current):
         self.app_current = app_current
 
     def run(self):
-        while True:
-            if self.app_current.currentIndex() == SIGNAL_TAB_ID or self.app_current.currentIndex() == STATUS_TAB_ID:
-                while self.plot_position_in_array[0] % self.step < 0.9 * self.step:
-                    time.sleep(0.05 * self.step / FS)
-                current_loc = int(self.plot_position_in_array[0]) * CHANNELS
-                if self.app_current.currentIndex() == SIGNAL_TAB_ID:                                    
-                    thresh_channels = np.ones(self.ch_num.shape[0])
-                    spikes = np.argwhere(
-                        [
-                            np.hstack(
-                                (
-                                    np.equal(
-                                        self.spike_stream[current_loc + ch :: -CHANNELS], 1
-                                    ),
-                                    np.equal(
-                                        self.spike_stream[
-                                            -CHANNELS + ch : current_loc + ch + 1 : -CHANNELS
-                                        ],
-                                        1,
-                                    ),
-                                )
-                            )
-                            for ch in self.ch_num
-                        ]
-                    )
-                    voltage = [
-                        np.hstack(
-                            (
-                                self.voltage_stream[current_loc + ch :: CHANNELS],
-                                self.voltage_stream[ch : current_loc + ch : CHANNELS],
-                            )
-                        )
-                        for ch in self.ch_num
-                    ]
-                    if self.plot_voltage_bool:
-                        signal = [
-                            np.hstack(
-                                (
-                                    self.signal_stream[current_loc + ch :: CHANNELS],
-                                    self.signal_stream[ch : current_loc + ch : CHANNELS],
-                                )
-                            )
-                            for ch in self.ch_num
-                        ]
+        current_loc = 0
+        last_package_id = 0  # Used for spike alignment
+        
+        # Define a reasonable max spike buffer size (adjust as needed)
+        MAX_SPIKES = 240*100  # Preallocate space for up to 10k spikes
+        spike_channel_buffer = np.empty(MAX_SPIKES, dtype=np.uint8)
+        spike_package_buffer = np.empty(MAX_SPIKES, dtype=np.uint32)
+        spike_index = 0  # Tracks the current insert position
 
-                        for ch_id, ch_thresh in enumerate(self.ch_num):
-                            thresh_channels[ch_id] = self.thresh_stream[ch_thresh]
-                        self.dataChanged.emit(
-                            (
-                                spikes,
-                                voltage,
-                                signal,
-                                thresh_channels,
-                            )
-                        )
-                    else:
-                        self.dataChanged.emit((spikes, voltage))
-                else:                     
-                    current_status_loc = int(current_loc / CHANNELS * STATUS_LEN)
-                    status = [
-                        np.hstack(
-                            (
-                                self.status_stream[current_status_loc + j :: STATUS_LEN],
-                                self.status_stream[j : current_status_loc + j : STATUS_LEN],
-                            )
-                        )
-                        for j in range(STATUS_LEN)
-                    ]
-                    self.dataChanged.emit((status, ))
-                time.sleep(0.1 * self.step / FS)
+
+        time.sleep(.5)
+        # **Drain any old messages from the buffers**
+        print("Draining ZeroMQ buffers before starting...")
+        while True:
+            try:
+                self.data_socket.recv(zmq.NOBLOCK)  # Non-blocking receive
+            except zmq.Again:  # No more messages left in the buffer
+                break
+        
+        while True:
+            try:
+                self.spike_socket.recv(zmq.NOBLOCK)  # Non-blocking receive
+            except zmq.Again:  # No more messages left in the buffer
+                break
+
+        print("Buffers cleared. Now starting processing.")
+
+
+        while True:
+            try:
+                # Poll both data and spike sockets with a 10ms timeout
+                socks = dict(self.poller.poll(10))
+
+                # Receive raw data from ZeroMQ
+                if self.data_socket in socks:
+                    try:
+                        raw_data = self.data_socket.recv()
+                        data_array = np.frombuffer(raw_data, dtype=np.float32)
+
+                        # Directly slice without redundant conversions
+                        voltage_chunk = data_array[:CHANNELS * EXTERNAL_PLOT_CHUNK_LENGTH].reshape(CHANNELS, EXTERNAL_PLOT_CHUNK_LENGTH)
+                        signal_chunk = data_array[CHANNELS * EXTERNAL_PLOT_CHUNK_LENGTH:2 * CHANNELS * EXTERNAL_PLOT_CHUNK_LENGTH].reshape(CHANNELS, EXTERNAL_PLOT_CHUNK_LENGTH)
+                        thresh_chunk = data_array[2 * CHANNELS * EXTERNAL_PLOT_CHUNK_LENGTH : -1]  # Last value is package ID
+
+                        # Assign slices directly
+                        self.voltage_stream[self.ch_num, self.plot_position_in_array : self.plot_position_in_array + EXTERNAL_PLOT_CHUNK_LENGTH] = voltage_chunk[self.ch_num,:]
+                        self.signal_stream[self.ch_num, self.plot_position_in_array : self.plot_position_in_array + EXTERNAL_PLOT_CHUNK_LENGTH] = signal_chunk[self.ch_num,:]
+                        self.thresh_stream[self.ch_num] = thresh_chunk[self.ch_num]
+
+                        last_package_id = int(data_array[-1]+.5)
+
+                        self.plot_position_in_array = (self.plot_position_in_array+EXTERNAL_PLOT_CHUNK_LENGTH)
+                    except Exception as e:
+                        # print(f'Raw data receive failed: {e}')
+                        pass
+                # Receive spikes from ZeroMQ
+                if self.spike_socket in socks:
+                    try:
+                        spike_data = self.spike_socket.recv()
+                        if len(spike_data) > 3:
+                            spike_count = struct.unpack("I", spike_data[:4])[0]
+                            # print(f"Received spikes {spike_count}")
+                            if spike_count:
+                                # Get separate channel & package arrays
+                                channels, packages = parse_spike_times(spike_data)
+
+                                # Efficiently insert into preallocated buffer
+                                num_insert = min(spike_count, MAX_SPIKES - spike_index)
+                                spike_channel_buffer[spike_index:spike_index + num_insert] = channels[:num_insert]
+                                spike_package_buffer[spike_index:spike_index + num_insert] = packages[:num_insert]
+                                spike_index += num_insert
+                        else:
+                            print("No spikes")
+                    except Exception as e:
+                        print(f"Spike data receive failed: {e}")
+
+
+                if self.plot_position_in_array == PLOT_BUF_LEN:  # Emit every quarter
+                    try:
+                        if (self.app_current.currentIndex() in [SIGNAL_TAB_ID, STATUS_TAB_ID]) and not self.app_current.freeze:
+                            # Slice only the filled part of the spike buffer
+                            channels_to_emit = spike_channel_buffer[:spike_index].copy()
+                            packages_to_emit = (spike_package_buffer[:spike_index].copy()).astype(int)                        
+
+                            self.emit_plot_data(channels_to_emit, packages_to_emit, last_package_id)
+                        spike_index = 0  # Reset buffer index for next batch
+                        self.plot_position_in_array = 0
+
+                    except Exception as e:
+                        print(f'Emitting data failed with {e}')
+
+
+            except Exception as e:
+                # print(f"ZMQ receive error: {e}")
+                continue  # Keep retrying
+
+
+
+    def emit_plot_data(self, channel_ids, package_ids, last_package_id):
+        """Emit the updated data including spike positions."""
+        if self.app_current.currentIndex() == SIGNAL_TAB_ID:                                    
+            # print("Emitting now")
+
+            # Align spikes with the plot buffer using package IDs
+            spike_x_values = [[] for _ in range(self.ch_num.shape[0])]
+
+            for ch_order, ch in enumerate(self.ch_num):
+                spike_ids = np.where(channel_ids == ch)[0]
+                spike_x_values[ch_order] = package_ids[spike_ids]-last_package_id - 2 # shift is necessary because of subtraction?
+            # print(f"Example pkg {package_ids[spike_ids]}, and {last_package_id}")
+            # print("Done with spikes")
+            # print(f'Spikes are for example: {spike_x_values[0]} and {spike_x_values[1]}')
+
+            # voltage = [self.voltage_stream[ch, :self.plot_position_in_array] for ch in self.ch_num]
+
+            if self.plot_voltage_bool:
+                    
+                self.dataChanged.emit(
+                    (
+                        spike_x_values,  # X-Y spike data
+                        self.voltage_stream[self.ch_num, :self.plot_position_in_array],
+                        self.signal_stream[self.ch_num, :self.plot_position_in_array],
+                        self.thresh_stream[self.ch_num],
+                    )
+                )
             else:
-                QtCore.QThread.msleep(2000)
+                self.dataChanged.emit(
+                    (
+                        spike_x_values,  # X-Y spike data
+                        self.voltage_stream[self.ch_num, :self.plot_position_in_array],
+                    )
+                )                
+        
+
 
 class UpdateWavelet(QtCore.QThread):
     """Update the spike shapes data"""
@@ -504,17 +463,7 @@ class UpdateWavelet(QtCore.QThread):
         self.app_current = app_current
 
     def run(self):
-        while True:
-            if self.app_current.currentIndex() == WAVELET_TAB_ID:
-                spike_template = [
-                    [self.spike_stream[ch*SPIKE_WAVELET_BUF+id*SPIKE_WAVELET_LEN:ch*SPIKE_WAVELET_BUF+(id+1)*SPIKE_WAVELET_LEN] for id in range(SPIKE_WAVELET_NUM)]
-                    for ch in self.ch_num
-                ]
-
-                self.dataWaveletChanged.emit((spike_template, ))
-                QtCore.QThread.msleep(self.update_t)
-            else:
-                QtCore.QThread.msleep(2000)
+        pass
 
 class UpdateRaster(QtCore.QThread):
     """Update the raster plot data"""
@@ -529,10 +478,4 @@ class UpdateRaster(QtCore.QThread):
         self.app_current = app_current
 
     def run(self):
-        while True:
-            if self.pipe.poll():
-                if self.app_current.currentIndex() == RASTER_TAB_ID:
-                    self.dataRasterChanged.emit((self.pipe.recv()))
-                else:
-                    self.pipe.recv()
-            QtCore.QThread.msleep(self.update_t)
+        pass
