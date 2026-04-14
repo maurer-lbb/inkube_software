@@ -57,7 +57,7 @@ ECHO_SHIFT = 80
 RESPONSE_SHIFT = 336
 
 STIMULUS_CYCLE = int(500e-3*FS) # for closed loop stimulation, this is the time between two stimulation commands and therefore restricting the frequency
-MIN_PKG_DELAY = int(18e-3*FS) # in samples, this is the minimum timing in closed-loop stim for receiving a stimulation command from the Jupyter client and relaying it to the FPGA
+MIN_PKG_DELAY = int(25e-3*FS) # in samples, this is the minimum timing in closed-loop stim for receiving a stimulation command from the Jupyter client and relaying it to the FPGA
 RESPONSE_IMPORTANT_PERIOD = int(20e-3*FS) # samples after stimulus that spikes are readout in closed-loop stim
 START_ID_INIT = int(1*STIMULUS_CYCLE) # when initiating closed loop stimulation this is the time delay to start segmentation 
 
@@ -75,6 +75,7 @@ DO_PLOT_RAW       = False # plot the raw data
 DO_PLOT           = True # enable plotting of data stream
 PLOT_NETWORKS     = False # plot the activity stream organised by network instead of by MEA
 DO_PLOT_SPIKE_WAVELETS = False # plot the cutout spike waveforms
+DO_PLOT_NETWORK_GROUPS = False
 
 DO_SEND_MEDIUM_LVL = False # send the medium level to the Jupyter client
 DO_SEND_ENV        = False # send the environment data to the Jupyter client
@@ -91,7 +92,7 @@ NETWORK_NUM       = 15*MEA_NUM
 ELECTRODES        = 4
 
 """ Spike detection settings"""
-INIT_THRESH_FACTOR = 5. # initial threshold factor for spike detection
+INIT_THRESH_FACTOR = 6. # initial threshold factor for spike detection
 SPIKE_WAVELET_NUM = 2
 SPIKE_WAVELET_LEN = 45
 SPIKE_EVENT_FORMAT = f"=B I H {SPIKE_WAVELET_LEN}f"  # Force correct alignment (use '=') uint8 channel_id, uint32 package_id, uint16 cycles, 34 float waveform
@@ -132,12 +133,13 @@ else:
 # FPGA sends little endian: (i.e. 1025 dec which is 0000 0100 0000 0001 is sent as [0001, 0000, 0100, 0000])
 
 ''' Stimulation parameters'''
-STIMULATION_DURATION = 6 # in packages  x57.8 us, results in 230.4 us per phase
+STIMULATION_DURATION = 8 # in packages  x57.8 us, results in 230.4 us per phase
 STIMULATOR_STEP_SETTING = '10nA' # '1uA' change to '10nA' or '200nA' for finer setting
-STIM_AMPLITUDE = 10 # in 1uA steps (max 255), this can also be adjusted live
+STIM_AMPLITUDE = 5 # in 1uA steps (max 255), this can also be adjusted live
 DISCHARGE_TIME = 17
-DISCHARGE_LIMIT_SETTING = 'recover10nA'
+DISCHARGE_LIMIT_SETTING = 'recover1uA'
 ENABLE_FAST_SETTLE = True
+DO_FILTER_SWITCH = True
 
 ''' Network interface constants '''
 PC_IP = '192.168.10.1'
@@ -206,7 +208,7 @@ if TEST_SERVER:
 
 def connect_to_zmq(socket_endpoint):
     """Connect to ZeroMQ publisher socket."""
-    context = zmq.Context()
+    context = zmq.Context.instance()
     socket = context.socket(zmq.SUB)
     socket.connect(socket_endpoint)
     socket.setsockopt(zmq.SUBSCRIBE, b"")  # Subscribe to all messages

@@ -3,7 +3,7 @@ import numpy as np
 import multiprocessing as mp
 import pyqtgraph as pg
 from PyQt6 import QtWidgets, QtGui
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QGraphicsRectItem
 from pyqtgraph.Qt import QtCore
 from datetime import datetime
 
@@ -29,6 +29,7 @@ from Client_config import (
     ELECTRODES,
     LSB_HG, 
 
+    DO_PLOT_NETWORK_GROUPS,
     SPIKE_WAVELET_NUM,
     PLOT_UPDATE_STEP, 
 )
@@ -253,30 +254,8 @@ class App(QtWidgets.QTabWidget):
                     view_list_id += 1
         else:
             rows = 0
-
-        # spike wavelet plots
-        if DO_PLOT_SPIKE_WAVELETS:
-            for r in range(rows):
-                for c in range(cols):
-                    if r * cols + c == self.plot_num:
-                        break
-                    v = self.shape_canvas.addPlot(row=rows-1-r, col=c)
-                    for i in range(SPIKE_WAVELET_NUM):
-                        data_it = pg.PlotDataItem(np.arange(10), np.zeros(10))
-                        v.addItem(data_it)
-                        self.spike_wavelet_plt_items[r * cols + c].append(data_it)
-                    v.showAxis("left")
-
-                    if c > 0 or r > 0:
-                        v.setXLink(self.spike_view_list[0])
-                        v.setYLink(self.spike_view_list[0])
-                    else:
-                        v.setXRange(0, self.x_spike_wavelet[-1])
-                        v.setYRange(-self.wave_y_lim, self.wave_y_lim)                
-                    v.showAxis("bottom")
-
-                    self.spike_view_list[r * cols + c] = v
-
+        if DO_PLOT_NETWORK_GROUPS:
+            self.addGridRectangles(rows, cols)
 
         r += 1
 
@@ -302,6 +281,52 @@ class App(QtWidgets.QTabWidget):
         v.setXRange(-10, self.raster_xlim)
         self.raster_plot_view = v
         self.raster_plot_it = scatter_it
+
+    def addGridRectangles(self, rows, cols):
+        """Add visual rectangles around every 2x2 grid of subplots"""
+        
+        # Store rectangle items for potential later use
+        self.grid_rectangles = []
+        
+        # Iterate through the grid in 2x2 blocks
+        for r in range(0, rows, 2):
+            for c in range(0, cols, 2):
+                # Skip if we're at the edge and don't have a full 2x2 block
+                if r + 1 >= rows or c + 1 >= cols:
+                    continue
+                    
+                # Option 1: Using a proxy widget with a frame
+                rect_widget = QGraphicsRectItem()
+                
+                # Get the bounding box of the 2x2 plots
+                # You'll need to get the actual plot positions
+                top_left_plot = self.canvas.getItem(row=rows-1-r, col=c)
+                bottom_right_plot = self.canvas.getItem(row=rows-1-(r+1), col=c+1)
+                
+                if top_left_plot and bottom_right_plot:
+                    # Get the view boxes
+                    tl_vb = top_left_plot.getViewBox()
+                    br_vb = bottom_right_plot.getViewBox()
+                    
+                    # Get scene positions
+                    tl_rect = tl_vb.sceneBoundingRect()
+                    br_rect = br_vb.sceneBoundingRect()
+                    
+                    # Create rectangle encompassing the 2x2 grid
+                    x = tl_rect.x() - 2  # Small padding
+                    y = tl_rect.y() - 2
+                    width = br_rect.x() + br_rect.width() - tl_rect.x() + 4
+                    height = br_rect.y() + br_rect.height() - tl_rect.y() + 4
+                    
+                    rect_widget.setRect(x, y, width, height)
+                    rect_widget.setPen(pg.mkPen(color=(100, 100, 100), width=2))
+                    rect_widget.setBrush(pg.mkBrush(None))  # Transparent fill
+                    
+                    # Add to the scene
+                    self.canvas.scene().addItem(rect_widget)
+                    self.grid_rectangles.append(rect_widget)
+
+    
 
     def createStatusPlots(self):
         """"add status bplots to new tab"""

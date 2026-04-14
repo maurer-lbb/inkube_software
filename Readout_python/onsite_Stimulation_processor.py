@@ -89,7 +89,7 @@ def closed_loop_stim(
     poll_timeout_in_ms = 5
 
     # Initialize ZMQ context
-    context = zmq.Context()    
+    context = zmq.Context.instance()   
     
     # Publisher socket for stimulation data
     stimcom_pub_socket = context.socket(zmq.PUB)
@@ -382,7 +382,7 @@ def spike_triggered_stim(
     poll_timeout_in_ms = 5
 
     # Initialize ZMQ context
-    context = zmq.Context()    
+    context = zmq.Context.instance()
     
     # Publisher socket for stimulation data to h5
     stimcom_pub_socket = context.socket(zmq.PUB)

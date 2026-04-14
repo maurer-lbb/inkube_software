@@ -1,6 +1,8 @@
 """
 This script is the main entry point for the Readout_python application. It sets up various processes and threads for data readout, spike processing, stimulation, and plotting.
 Functions:
+    clear_spikes: Continuously clears spikes from the spike pipes.
+    transmit_spontaneous: Transmits spontaneous spikes to the spike queue and/or raster plot.
     main: The main function that starts all the processes and threads.
 """
 
@@ -87,7 +89,7 @@ if __name__ == "__main__":
     UDP_rcv_port = mp_shared.Value(c_uint16, 0)
 
     # Initialize ZMQ context
-    context = zmq.Context()
+    context = zmq.Context.instance()
     
     # Publisher socket for stimulation data
     stimdata_pub_socket = context.socket(zmq.PUB)

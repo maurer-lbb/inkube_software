@@ -11,7 +11,7 @@ class Communication:
     """
     Communication class for electrophysiology which can switch the mode of operation, send stimuli and receive electrophysiology data
     """
-    def __init__(self, host, port, auth_key="1234"):
+    def __init__(self, loc_host, host, port, auth_key="1234"):
         """
         Communication class to send stimuli to the simulation and receive responses
         Args:
@@ -21,9 +21,10 @@ class Communication:
         Returns:
             None
         """
-        self.host = host
-        self.port = port
-        self.auth_key = auth_key
+        self.host       = host
+        self.port       = port
+        self.loc_host   = loc_host
+        self.auth_key   = auth_key
 
         # Set limit for reconnection tries
         self.reconnection_tries = 0
@@ -42,10 +43,10 @@ class Communication:
         self.response_sub.connect(f"tcp://{host}:5459")  # Use actual port number in place of ZMQ_RESPONSE_PORT
         self.response_sub.setsockopt(zmq.SUBSCRIBE, b"")  # Subscribe to all messages
         self.response_sub.setsockopt(zmq.CONFLATE, 1)  # Keep only the latest message
-                
+        
         # Create publisher for stimulus data
         self.stim_pub = self.context.socket(zmq.PUB)
-        self.stim_pub.bind(f"tcp://{host}:5460")  # Use actual port number in place of ZMQ_STIM_REQUEST_PORT
+        self.stim_pub.bind(f"tcp://{loc_host}:5460")  # Use actual port number in place of ZMQ_STIM_REQUEST_PORT
 
         # Set up poller for non-blocking receive
         self.poller = zmq.Poller()
@@ -91,18 +92,7 @@ class Communication:
             print('Connection could not be established')
             return -1
     
-    def drain_response(self):
-        """Drains all messages from a ZMQ socket queue without blocking."""
-        message = None
-        try:
-            while True:
-                message = self.response_sub.recv(zmq.DONTWAIT)  # Non-blocking receive
-                # Optional: Process the message if needed
-                time.sleep(1e-6)
-        except zmq.Again:
-            return message
-
-    def get_response(self, matrix_calculation=True):
+    def get_response(self):
         """
         Get the response when main is in stimulation mode
         Returns:
@@ -122,7 +112,7 @@ class Communication:
                     response = json.loads(json_response)
                     
                     # Reconstruct the spike matrix from flattened arrays
-                    if ('latencies' in response) and ('networks' in response) and ('electrodes' in response) and matrix_calculation:
+                    if 'latencies' in response and 'networks' in response and 'electrodes' in response:
                         # Initialize empty spike matrix
                         networks_spike_mat = np.empty((NETWORK_NUM, ELECTRODES), dtype=object)
                         for j in np.ndindex(networks_spike_mat.shape):
@@ -202,7 +192,7 @@ class Communication:
             if self.new_connection() != -1:
                 return self.empty_spont_q()
             
-    def send_stimulus(self, stim_sequence, index=0):
+    def send_stimulus(self, stim_sequence, index=None):
         """
         Send the stimulus to the main script which then sends it via USB to the SoC
         Args:
@@ -229,34 +219,6 @@ class Communication:
             print(f"Failed to send stimulus with error {e}")
             if self.new_connection() != -1:
                 return self.send_stimulus(stim_sequence, index)
-
-    def send_triggered_stimulus(self, stim_sequence, spike_nw, spike_el):
-        """
-        Send the stimulus to the main script which then sends it via USB to the SoC
-        Args:
-            stim_sequence: list, list of stimuli
-            index: int, index of the stimulus
-            trigger_location: tuple, (spike_nw, spike_el) where aspike on this triggers a stimulus
-        Returns:
-            None
-        """
-
-        try:
-            # Create the stimulus message
-            stim_data = {
-                'stim_matrix': stim_sequence.tolist() if hasattr(stim_sequence, 'tolist') else stim_sequence, 
-                'trigger_location': (spike_nw, spike_el)
-            }
-            
-            # Convert to JSON and send
-            stim_json = json.dumps(stim_data)
-            self.stim_pub.send_string(stim_json)
-            self.last_stimulus = stim_sequence
-            
-        except Exception as e:
-            print(f"Failed to send stimulus with error {e}")
-            if self.new_connection() != -1:
-                return self.send_triggered_stimulus(stim_sequence, spike_nw, spike_el)
 
     def send_control(self, control_dict):
         """

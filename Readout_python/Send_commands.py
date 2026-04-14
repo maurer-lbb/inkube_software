@@ -27,6 +27,7 @@ from Client_config import (
     CHIP_NUM,
     DISCHARGE_LIMIT_SETTING, 
     ENABLE_FAST_SETTLE, 
+    DO_FILTER_SWITCH, 
 )
 
 def set_stimulus_timing_local(
@@ -112,8 +113,8 @@ INIT_COMMAND_LIST = [
     (33, [0x00, 0x00]),  # stimulation disable B
     # ADC recording settings
     (1, [0x00, 0x00]),  # dig out highZ set to zero - to set digaux1 and 2 high use (1, [0x0a, 0x00]),  # dig out highZ set to zero
-    (4, [0x00, 0x16]),  # upper cutoff f to 7.5 kHz - 22 0
-    (5, [0x00, 0x17]),  # upper cutoff f to 7.5 kHz - 23 0
+    (4, [0x00, 0x21]),  # upper cutoff f to 7.5 kHz - 22 0, 5kHz 33/37, 7.5kHz 22/23, 10kHz 17/16
+    (5, [0x00, 0x25]),  # upper cutoff f to 7.5 kHz - 23 0
     (6, [0x00, 0x0A]),  # lower cutoff f to 1 kHz  (10)
     (7, [0x00, 0x0F]),  # lower cutoff f to 300 Hz (15)
     (8, [0xFF, 0xFF]),  # power up high gain
@@ -362,50 +363,65 @@ def prepare_dynamic_stim_command(command_tuple_list, stimulus_timing_local):
         # prepare general on and off command for filter switch
         if (sorted_pkg_ids[0] > 0x80000000): # for immediate command just forward
             start_pkg_id = (sorted_pkg_ids[0]-1)
-            end_pkg_id = (sorted_pkg_ids[-1]+2)
+            end_pkg_id = (sorted_pkg_ids[-1]+1)
+            end_pkg_id_2 = (sorted_pkg_ids[-1]+2)
         else:
             start_pkg_id = ((sorted_pkg_ids[0]-1) % MAX_PKG_ID)
-            end_pkg_id = ((sorted_pkg_ids[-1]+2) % MAX_PKG_ID)
+            end_pkg_id = ((sorted_pkg_ids[-1]+1) % MAX_PKG_ID)
+            end_pkg_id_2 = ((sorted_pkg_ids[-1]+2) % MAX_PKG_ID)
 
         frame_start = bytearray()
         frame_end = bytearray()
+        frame_end_fin = bytearray()
 
         frame_start.extend(struct.pack("<I", 0))
         frame_end.extend(struct.pack("<I", 0))
+        frame_end_fin.extend(struct.pack("<I", 0))
 
         frame_start.extend(bytearray([(start_pkg_id >> (i * 8)) % 256 for i in range(4)]))
         frame_end.extend(bytearray([(end_pkg_id >> (i * 8)) % 256 for i in range(4)]))
+        frame_end_fin.extend(bytearray([(end_pkg_id_2 >> (i * 8)) % 256 for i in range(4)]))
 
         frame_start.extend([255]) # for chip count
         frame_end.extend([255])
+        frame_end_fin.extend([255])
 
         chips_in_frame = 0
 
         for mea in range(4):
             for chip in range(4):
-                if mea_chip_stim[mea, chip]:
-                    chip_header = struct.pack("!B", ((chip+mea*4) << 4) | 2)  # 4-bit chip ID + 4-bit num_commands
-                    frame_start.extend(chip_header)
+                if mea_chip_stim[mea, chip]:                    
+                    chip_header = struct.pack("!B", ((chip+mea*4) << 4) | 1)  # 4-bit chip ID + 4-bit num_commands
                     frame_end.extend(chip_header)
+                    frame_end_fin.extend(chip_header)
+
+                    if DO_FILTER_SWITCH:
+                        chip_header = struct.pack("!B", ((chip+mea*4) << 4) | 2)  # 4-bit chip ID + 4-bit num_commands
+                    frame_start.extend(chip_header)
+
                     # add register write to subframe
-                    frame_start.extend(                            
-                        write_to_register(FILTER_SWITCH_REG, [0xff, 0xff])
-                    )
+                    if DO_FILTER_SWITCH:
+                        frame_start.extend(                            
+                            write_to_register(FILTER_SWITCH_REG, [0xff, 0xff])
+                        )
+                        frame_end.extend(
+                            write_to_register(FILTER_SWITCH_REG, [0, 0])
+                        )
                     frame_start.extend(                            
                         write_to_register(FAST_SETTLE_REG, [0xff, 0xff])
                     )                
-                    frame_end.extend(
-                        write_to_register(FILTER_SWITCH_REG, [0, 0])
-                    )
-                    frame_end.extend(
+                    frame_end_fin.extend(
                         write_to_register(FAST_SETTLE_REG, [0, 0])
                     )                
                     chips_in_frame += 1
         frame_start[8] = chips_in_frame
         frame_end[8] = chips_in_frame
+        frame_end_fin[8] = chips_in_frame
 
         command_frame_list.insert(0,frame_start)
-        command_frame_list.append(frame_end) 
+        if DO_FILTER_SWITCH:
+            command_frame_list.append(frame_end) 
+        command_frame_list.append(frame_end_fin)
    
     print(f'Command processing took {(time.time()-t_start)*1000:.3f} ms')
     return command_frame_list

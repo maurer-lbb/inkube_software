@@ -29,7 +29,7 @@
 #define BUFFER_LENGTH 256 // this is for threshold calculation
 
 #define FIR_LEN 1 // 31
-#define SG_LEN 7 // savitzky golay (polynominal fit)
+#define SG_LEN 3 // savitzky golay (polynominal fit)
 
 #define BLIND_DURATION 25 // blind the electrode after a spike for some samples
 #define DETECT_DURATION 20 // 1.2 ms has to be smaller than BLIND, within this window it looks for the maximum, waveshape is shifted by this
@@ -51,7 +51,7 @@
 #define THRESH_FACTOR 7.f // make sure this is float!
 #endif
 
-#define SAVGOL
+// #define SAVGOL
 // #define TRIGGER_ARTEFACT
 
 
@@ -103,9 +103,13 @@ private:
     // const float coeff_b[3] = {0.8167, -1.6334, 0.8167};
 
 
-    // // 2nd Order Butterworth High-Pass Filter Coefficients
+    // // 2nd Order Butterworth High-Pass Filter Coefficients, 300Hz cutoff
     const float coeff_b[3] = { 0.9260957937, -1.8521915873, 0.9260957937 };
     const float coeff_a[3] = { 1.0000000000, -1.8467222773, 0.8576608974 };
+
+    // cutoff 500 Hz
+    // const float coeff_b[3] = { 0.8798654630, -1.7597309259, 0.8798654630 };
+    // const float coeff_a[3] = { 1.0000000000, -1.7452461669, 0.7742156850 };
 
     // 3rd Order Butterworth High-Pass Filter Coefficients
     // const float coeff_b[4] = { 0.8970644114, -2.6911932341, 2.6911932341, -0.8970644114 };
@@ -126,9 +130,13 @@ private:
     //     0.001533
     // };
 
-    // Savitzky-Golay 2nd order poly, 7 samples
+    // Savitzky-Golay 
     #ifdef SAVGOL
-    const float SG[SG_LEN] = {-0.0952381, 0.14285714, 0.28571429, 0.33333333,0.28571429, 0.14285714, -0.0952381};
+    // 2nd order poly, 7 samples
+    // const float SG[SG_LEN] = {-0.0952381, 0.14285714, 0.28571429, 0.33333333,0.28571429, 0.14285714, -0.0952381};
+    // mov avg for 3 samples to preserve 5kHz
+    const float SG[SG_LEN] = {1/3.0, 1/3.0, 1/3.0};
+
     #endif
 
     uint8_t stim_active[CHUNKED_CHANNELS];
